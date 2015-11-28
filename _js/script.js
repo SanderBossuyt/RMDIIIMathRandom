@@ -83,7 +83,7 @@ let SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
 
 // must enable shadows on the renderer
   renderer.shadowMapEnabled = true;
-
+  renderer.shadowMapType = THREE.PCFSoftShadowMap;
   // "shadow cameras" show the light source and direction
 // SKYBOX/FOG
   var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
@@ -95,43 +95,85 @@ scene.add(skyBox);
     //renderer.setClearColorHex(0x333F47, 1);
 
     // Create a light, set its position, and add it to the scene.
-
+/*
   // spotlight #1 -- yellow, dark shadow
-  /*var spotlight = new THREE.SpotLight(0xffff00);
-  spotlight.position.set(-60,150,-30);
+  var spotlight = new THREE.SpotLight('#e3e9f0');
+  spotlight.position.set(-60,250,-30);
   spotlight.shadowCameraVisible = true;
-  spotlight.shadowDarkness = 0.95;
-  spotlight.intensity = 2;
+  spotlight.shadowDarkness = 0.15;
+  spotlight.intensity = 1;
   // must enable shadow casting ability for the light
   spotlight.castShadow = true;
   scene.add(spotlight);
   // spotlight #2 -- red, light shadow
-  var spotlight2 = new THREE.SpotLight(0xff0000);
-  spotlight2.position.set(60,150,-60);
+  var spotlight2 = new THREE.SpotLight('e3e9f0');
+  spotlight2.position.set(60,300,-60);
   scene.add(spotlight2);
   spotlight2.shadowCameraVisible = true;
-  spotlight2.shadowDarkness = 0.70;
+  spotlight2.shadowDarkness = 0.10;
   spotlight2.intensity = 2;
   spotlight2.castShadow = true;
 
   // spotlight #3
-  var spotlight3 = new THREE.SpotLight(0x0000ff);
-  spotlight3.position.set(150,80,-100);
+  var spotlight3 = new THREE.SpotLight('e3e9f0');
+  spotlight3.position.set(300,200,100);
   spotlight3.shadowCameraVisible = true;
-  spotlight3.shadowDarkness = 0.95;
+  spotlight3.shadowDarkness = 0.15;
   spotlight3.intensity = 2;
   spotlight3.castShadow = true;
   scene.add(spotlight3);
   // change the direction this spotlight is facing
-  var lightTarget = new THREE.Object3D();
-  lightTarget.position.set(0,40,0);
-  scene.add(lightTarget);
-  spotlight3.target = lightTarget;*/
 
+*/
+
+// LIGHTS
+
+        var hemiLight = new THREE.HemisphereLight( '#4c6286', '#4c6286', 0.6 );
+        hemiLight.color.setHSL( 0.6, 1, 0.6 );
+        hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+        hemiLight.position.set( 0, 500, 0 );
+        scene.add( hemiLight );
+
+        //
+
+        var dirLight = new THREE.DirectionalLight( '#4c6286', 1 );
+        dirLight.color.setHSL( 0.1, 1, 0.75 );
+        dirLight.position.set( -1, 1.75, 1 );
+        dirLight.position.multiplyScalar( 50 );
+        scene.add( dirLight );
+
+        dirLight.castShadow = true;
+
+        dirLight.shadowMapWidth = 2048;
+        dirLight.shadowMapHeight = 2048;
+
+        var d = 50;
+
+        dirLight.shadowCameraLeft = -d;
+        dirLight.shadowCameraRight = d;
+        dirLight.shadowCameraTop = d;
+        dirLight.shadowCameraBottom = -d;
+
+        dirLight.shadowCameraFar = 3500;
+        dirLight.shadowBias = -0.0001;
+        //dirLight.shadowCameraVisible = true;
+
+        // GROUND
+
+        var groundGeo = new THREE.PlaneBufferGeometry( 10000, 10000 );
+        var groundMat = new THREE.MeshPhongMaterial( { color: '#283c5d', specular: '#4c6286' } );
+        //groundMat.color.setHSL( 0.03, 1, 0.75 );
+
+        var ground = new THREE.Mesh( groundGeo, groundMat );
+        ground.rotation.x = -Math.PI/2;
+        ground.position.y = -33;
+        scene.add( ground );
+
+        ground.receiveShadow = true;
 
 
   let material = new THREE.MeshBasicMaterial({
-    color: '#ff2354',
+    color: '#e3e9f0',
     wireframe: false
   });
 
@@ -146,13 +188,23 @@ var floorGeometry = new THREE.PlaneGeometry(200, 200, 1, 1);
 var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.rotation.x = -Math.PI / 2;
 scene.add(floor);*/
+// FLOOR
+  /*var floorMaterial = new THREE.MeshBasicMaterial( {color:'#42556c', side:THREE.DoubleSide, shading: THREE.FlatShading} );
+  var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 100, 100);
+  var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  floor.position.y = -0.5;
+  floor.rotation.x = Math.PI / 2;
+  floor.castShadow = false;
+  floor.receiveShadow = true;
+  scene.add(floor);*/
 
 
-
+var meshke = new THREE.MeshLambertMaterial( { color: '#f9f9f9', shading: THREE.FlatShading, overdraw: 0.5 } );
 var MovingCubeGeom = new THREE.CubeGeometry(10, 10, 10);
-  MovingCube = new THREE.Mesh( MovingCubeGeom, material );
+  MovingCube = new THREE.Mesh( MovingCubeGeom, meshke );
   MovingCube.position.set(0, 25.1, 0);
   MovingCube.castShadow = true;
+  MovingCube.receiveShadow = true;
   scene.add(MovingCube);
 
   animate();
