@@ -33,14 +33,17 @@
     "npm": "3.x.x"
   },
   "dependencies": {
-    "handlebars": "^3.0.3",
+    "bower": "^1.6.8",
+    "dotenv": "^1.2.0",
     "forever": "^0.15.1",
+    "handlebars": "^3.0.3",
     "hapi": "^10.0.1",
     "inert": "^3.0.1",
-    "vision": "^3.0.0",
-    "dotenv": "^1.2.0",
-    "lodash": "^3.10.1",
     "joi": "^6.7.1",
+    "lodash": "^3.10.1",
+    "three-orbit-controls": "^72.0.0",
+    "tracking": "^1.1.1",
+    "vision": "^3.0.0",
     "yar": "^4.2.0"
   },
   "license": "MIT"

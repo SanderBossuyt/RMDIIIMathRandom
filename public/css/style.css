@@ -66,9 +66,8 @@ body {
 }
 
 main {
-  margin: 0 auto;
-  padding-top: 30px;
-  width: 960px;
+  padding-top: 10px;
+  width: 100%;
   font-size: 1.8em;
 }
 

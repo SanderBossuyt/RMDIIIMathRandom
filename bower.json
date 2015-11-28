@@ -1,0 +1,21 @@
+{
+  "name": "RMDOpdracht",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "Bossuyt Sander & Verheye Lieselot"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/SanderBossuyt/RMDIIIMathRandom",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "tracking": "tracking.js#~1.1.1"
+  }
+}

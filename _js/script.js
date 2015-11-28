@@ -6,102 +6,82 @@
 // import 'babel-core/polyfill';
 // or import specific polyfills
 // import {$} from './helpers/util';
+
+
 import helloworldTpl from '../_hbs/helloworld';
+//let tracking = require('tracking');
 
-//const init = () => {
+//var THREE = require('three');
+let OrbitControls = require('three-orbit-controls')(THREE);
+let scene, camera, renderer;
+
+const init = () => {
+
+
+    //let myTracker = new tracking.Tracker('target');
+
+
+
   console.log(helloworldTpl({name: 'Bossuyt Sander & Verheye Lieselot'}));
-//};
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 2000 );
+  camera.position.x = 100;
+  camera.position.y = 100;
+  camera.position.z = 200;
+  renderer = new THREE.WebGLRenderer();
 
-//init();
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+  );
+  //console.log(OrbitControls);
+  new OrbitControls(camera);
+  document.querySelector('main').appendChild(renderer.domElement);
 
-    var container;
-    var camera, scene, renderer, group, particle;
-    var mouseX = 0, mouseY = 0;
-    var video = document.getElementById('video');
-    var canvas = document.getElementById('canvas');
-    var context = canvas.getContext('2d');
-    var windowHalfX = window.innerWidth / 2;
-    var windowHalfY = window.innerHeight / 2;
-    init();
-    animate();
-    window.onload = function() {
-      var tracker = new tracking.ColorTracker();
-      tracker.setMinDimension(5);
-      tracker.setMinGroupSize(10);
-      tracking.track('#video', tracker, { camera: true });
-      tracker.on('track', onColorMove);
-    };
-    function init() {
-      container = document.createElement('div');
-      document.body.appendChild(container);
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 3000);
-      camera.position.z = 1000;
-      scene = new THREE.Scene();
-      var PI2 = Math.PI * 2;
-      var program = function (context) {
-        context.beginPath();
-        context.arc(0, 0, 0.5, 0, PI2, true);
-        context.fill();
-      }
-      group = new THREE.Object3D();
-      scene.add(group);
-      for (var i = 0; i < 1000; i++) {
-        var material = new THREE.SpriteCanvasMaterial({
-          color: Math.random() * 0x808008 + 0x808080,
-          program: program
-        });
-        particle = new THREE.Sprite(material);
-        particle.position.x = Math.random() * 2000 - 1000;
-        particle.position.y = Math.random() * 2000 - 1000;
-        particle.position.z = Math.random() * 2000 - 1000;
-        particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
-        group.add(particle);
-      }
-      renderer = new THREE.CanvasRenderer();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      container.appendChild(renderer.domElement);
-      window.addEventListener('resize', onWindowResize, false);
-    }
-    function onWindowResize() {
-      windowHalfX = window.innerWidth / 2;
-      windowHalfY = window.innerHeight / 2;
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-    function onColorMove(event) {
-      if (event.data.length === 0) {
-        return;
-      }
-      var maxRect;
-      var maxRectArea = 0;
-      event.data.forEach(function(rect) {
-        if (rect.width * rect.height > maxRectArea){
-          maxRectArea = rect.width * rect.height;
-          maxRect = rect;
-        }
-      });
-      if (maxRectArea > 0) {
-        var rectCenterX = maxRect.x + (maxRect.width/2);
-        var rectCenterY = maxRect.y + (maxRect.height/2);
-        mouseX = (rectCenterX - 160) * (window.innerWidth/320) * 10;
-        mouseY = (rectCenterY - 120) * (window.innerHeight/240) * 10;
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.strokeStyle = maxRect.color;
-        context.strokeRect(maxRect.x, maxRect.y, maxRect.width, maxRect.height);
-        context.font = '11px Helvetica';
-        context.fillStyle = "#fff";
-        context.fillText('x: ' + maxRect.x + 'px', maxRect.x + maxRect.width + 5, maxRect.y + 11);
-        context.fillText('y: ' + maxRect.y + 'px', maxRect.x + maxRect.width + 5, maxRect.y + 22);
-      }
-    }
-    function animate() {
-      window.requestAnimationFrame(animate);
-      render();
-    }
-    function render() {
-      camera.position.x += (mouseX - camera.position.x) * 0.05;
-      camera.position.y += (- mouseY - camera.position.y) * 0.05;
-      camera.lookAt(scene.position);
-      renderer.render(scene, camera);
-    }
+
+
+
+  //box();
+  //spheres = createSpheres(50);
+  /*var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+  var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+  var cube = new THREE.Mesh( geometry, material );*/
+
+
+
+  let geometry = new THREE.SphereGeometry(20, 10, 10);
+  let material = new THREE.MeshBasicMaterial({
+    color: '#ff2354',
+    wireframe: true
+  });
+  let shape = new THREE.Mesh(geometry, material);
+  shape.position.x = 0;
+  shape.position.y = 40;
+  shape.position.z = 0;
+  scene.add( shape );
+
+
+  let floorMaterial = new THREE.MeshBasicMaterial({
+    color: '#5423ff',
+    wireframe: true
+  });
+  let floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+  let floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  floor.position.y = 1;
+  floor.rotation.x = Math.PI / 2;
+  scene.add(floor);
+
+
+  render();
+};
+
+const render = () => {
+  //move();
+  renderer.render(scene, camera);
+  requestAnimationFrame(() => render());
+
+};
+
+init();
+
+
