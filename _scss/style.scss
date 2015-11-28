@@ -2,8 +2,11 @@
 @import 'reset';
 
 body {
+  color: #fff;
   font-size: 62.5%;
   font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
+  background-color: #181849;
+
 }
 
 main {
@@ -14,5 +17,7 @@ main {
 }
 
 h1 {
+  color: #fff;
   font-size: 1.3em;
 }
+

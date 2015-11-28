@@ -1,5 +1,8 @@
 'use strict';
 
+//let script = require('../_js/script.js');
+
+
 module.exports = [
 
   {
@@ -13,10 +16,29 @@ module.exports = [
   {
     method: 'GET',
     path: '/connectthedots',
-    handler: (request, reply) => reply.view('game', {
-      name: 'Bossuyt Sander & Verheye Lieselot',
-      title: 'Connect the dots'
-    })
+    handler: (request, reply) => {
+      console.log(request.payload);
+      return reply.view('game', {
+        title: 'connect the dots',
+        level: 'easy'
+      });
+    }
+  },
+
+   {
+    method: 'POST',
+    path: '/connectthedots',
+    handler: (request, reply) => {
+      console.log(request.payload.level);
+      if(request.payload.level === 'easy'){
+        //script(request.payload.level);
+      }
+      return reply.view('game', {
+        title: 'connect the dots',
+        level: request.payload.level
+      });
+
+    }
   }
 
 

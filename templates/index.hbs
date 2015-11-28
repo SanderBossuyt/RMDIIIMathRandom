@@ -1,13 +1,34 @@
+<!-- deze file wordt in de startpagina ingeladen -->
 <main>
-  {{> welcome this}}
+
+<h1> connect the dots </h1>
+
+<p>Use any bright colored object to steer the rocket.
+Try steering through the circles and wait for the end.</p>
+
+<form class="form" method="post" action="/connectthedots">
+
+
+<input type="submit" name="level" value="easy" />
+<input type="submit" name="level" value="medium" />
+<input type="submit" name="level" value="hard" />
+
+
+</form>
+
+
+
 </main>
 
 {{#section 'head'}}
 
 {{/section}}
 
-{{#section 'scripts'}}
 
+
+
+{{#section 'scripts'}}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.js"></script>
   <!--<script src="../bower_components/tracking/build/tracking-min.js"></script>-->
 {{/section}}

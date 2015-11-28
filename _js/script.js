@@ -7,19 +7,26 @@
 // or import specific polyfills
 // import {$} from './helpers/util';
 
-
+import {settings, figure} from './data/';
 import helloworldTpl from '../_hbs/helloworld';
+import Torus from './modules/render/Torus';
+
+
 //let tracking = require('tracking');
 
 //var THREE = require('three');
 let OrbitControls = require('three-orbit-controls')(THREE);
 let scene, camera, renderer;
+let fixedArr = [];
+let levelArr = [];
+
 
 const init = () => {
 
 
-    //let myTracker = new tracking.Tracker('target');
-
+  //let myTracker = new tracking.Tracker('target');
+  let classes = document.querySelector('.level').classList;
+  let level = classes[1];
 
   console.log(helloworldTpl({name: 'Bossuyt Sander & Verheye Lieselot'}));
   scene = new THREE.Scene();
@@ -33,11 +40,27 @@ const init = () => {
     window.innerWidth,
     window.innerHeight
   );
+
+  for(let i = 0; i < settings.length; i++){
+
+    if(settings[i].type === level){
+        levelArr.push(settings[i]);
+    }
+
+  }
+
+  let number = Math.floor((Math.random() * levelArr.length) + 0);
+
+  let pickLevelFigure = levelArr[number];
+
+  let setting = pickLevelFigure;
+
+  let thisFigure = figure[setting.figure];
+  createFixed(setting, thisFigure);
+
   //console.log(OrbitControls);
   new OrbitControls(camera);
   document.querySelector('main').appendChild(renderer.domElement);
-
-
 
 
   //box();
@@ -45,8 +68,6 @@ const init = () => {
   /*var geometry = new THREE.BoxGeometry( 1, 1, 1 );
   var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
   var cube = new THREE.Mesh( geometry, material );*/
-
-
 
   let geometry = new THREE.SphereGeometry(20, 10, 10);
   let material = new THREE.MeshBasicMaterial({
@@ -74,8 +95,37 @@ const init = () => {
   render();
 };
 
+const createFixed = (setting, fig) => {
+
+  let {amount} = setting;
+
+
+
+
+  for(let i = 0; i < amount; i++){
+
+     let position = {
+      x: fig[i].x,
+      y: fig[i].y,
+      z: fig[i].z,
+    };
+
+    let torus = new Torus(position, setting.type);
+    scene.add(torus.render());
+    fixedArr.push(torus);
+
+  }
+
+};
+
+
+
+
+
+
 const render = () => {
   //move();
+
   renderer.render(scene, camera);
   requestAnimationFrame(() => render());
 
