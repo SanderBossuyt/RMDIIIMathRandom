@@ -83,3 +83,7 @@ h1 {
   position: absolute;
   z-index: 100;
 }
+
+.hidden {
+  visibility: hidden;
+}

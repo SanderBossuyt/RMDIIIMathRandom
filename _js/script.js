@@ -331,6 +331,10 @@ const onColorMove = (event) => {
     movingDOWN = false;
     movingLEFT = false;
     movingRIGHT = false;
+    rotateUP = false;
+    rotateDOWN = false;
+    rotateLEFT = false;
+    rotateRIGHT = false;
     return;
   }
 
@@ -338,10 +342,14 @@ const onColorMove = (event) => {
 
   var maxRect;
   var maxRectArea = 0;
+  var rectWidth, rectHeight;
 
   event.data.forEach(function(rect) {
+        console.log(rect.width, rect.height);
         if (rect.width * rect.height > maxRectArea){
           maxRectArea = rect.width * rect.height;
+          rectWidth = rect.width;
+          rectHeight = rect.height;
           maxRect = rect;
         }
       });
@@ -349,18 +357,35 @@ const onColorMove = (event) => {
         var rectCenterX = maxRect.x + (maxRect.width/2);
         var rectCenterY = maxRect.y + (maxRect.height/2);
 
+
+
+
+        if (rectWidth < 45) {
+          rotateUP = false;
+          rotateDOWN = true;
+        }else if (rectHeight >= 150){
+          rotateDOWN = false;
+          rotateUP = true;
+        }else if (rectWidth >= 45 && rectHeight <150){
+          rotateDOWN = false;
+          rotateUP = false;
+        }
+
+
+
         //console.log(maxRect.x, maxRect.y);
         // maxrect.x gaat van 0 tot 300 in spiegelbeeld
         // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
         // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
 
-        if (maxRect.x < 100) {
+
+        if (maxRect.x < 70) {
           movingRIGHT = true;
           movingLEFT = false;
-        }else if (maxRect.x >= 200) {
+        }else if (maxRect.x >= 230) {
           movingLEFT = true;
           movingRIGHT = false;
-        }else if (maxRect.x >= 100 && maxRect.x < 200){
+        }else if (maxRect.x >= 70 && maxRect.x < 230){
           movingLEFT = false;
           movingRIGHT = false;
         }
@@ -369,15 +394,43 @@ const onColorMove = (event) => {
         // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
         // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
 
-        if (maxRect.y < 50) {
+        if (maxRect.y < 30) {
           movingUP = true;
           movingDOWN = false;
-        }else if (maxRect.y >= 150) {
+        }else if (maxRect.y >= 170) {
           movingDOWN = true;
           movingUP = false;
-        }else if (maxRect.y >=50 && maxRect.y < 150){
+        }else if (maxRect.y >=30 && maxRect.y < 170){
           movingDOWN = false;
           movingUP = false;
+        }
+
+        //checks voor rotatie bij bewegingen - left right
+
+        if(maxRect.y < 30){
+          if (maxRect.x < 70) {
+            rotateRIGHT = true;
+          }else {
+            rotateRIGHT = false;
+          }
+
+          if(maxRect.x >=230){
+            rotateLEFT = true;
+          } else {
+            rotateLEFT = false;
+          }
+        } else if(maxRect.y >= 30 && maxRect.y < 170){
+          if (maxRect.x < 70) {
+            rotateRIGHT = true;
+          }else {
+            rotateRIGHT = false;
+          }
+
+          if(maxRect.x >=230){
+            rotateLEFT = true;
+          } else {
+            rotateLEFT = false;
+          }
         }
 
 
@@ -416,35 +469,35 @@ const update = () => {
   var rotation_matrix = new THREE.Matrix4().identity();
 
   if (movingUP){
-    MovingCube.translateZ(-2);
+    MovingCube.translateZ(-0.9);
   }
 
   if (movingDOWN){
-    MovingCube.translateZ(2);
+    MovingCube.translateZ(0.9);
   }
 
   if (movingLEFT){
-    MovingCube.translateX(-2);
+    MovingCube.translateX(-0.9);
   }
 
   if (movingRIGHT){
-    MovingCube.translateX(2);
+    MovingCube.translateX(0.9);
   }
 
   if (rotateUP){
-    MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.009);
+    MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.006);
   }
 
   if (rotateDOWN){
-    MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.009);
+    MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.006);
   }
 
   if (rotateLEFT){
-    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.009);
+    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.006);
   }
 
   if (rotateRIGHT){
-    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.009);
+    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.006);
   }
 
 
