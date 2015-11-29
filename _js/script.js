@@ -121,40 +121,6 @@ const init = () => {
   var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
   scene.add(skyBox);
   scene.fog = new THREE.FogExp2( '#0d305b', 0.00025 );
-// Set the background color of the scene.
-    //renderer.setClearColorHex(0x333F47, 1);
-
-    // Create a light, set its position, and add it to the scene.
-/*
-  // spotlight #1 -- yellow, dark shadow
-  var spotlight = new THREE.SpotLight('#e3e9f0');
-  spotlight.position.set(-60,250,-30);
-  spotlight.shadowCameraVisible = true;
-  spotlight.shadowDarkness = 0.15;
-  spotlight.intensity = 1;
-  // must enable shadow casting ability for the light
-  spotlight.castShadow = true;
-  scene.add(spotlight);
-  // spotlight #2 -- red, light shadow
-  var spotlight2 = new THREE.SpotLight('e3e9f0');
-  spotlight2.position.set(60,300,-60);
-  scene.add(spotlight2);
-  spotlight2.shadowCameraVisible = true;
-  spotlight2.shadowDarkness = 0.10;
-  spotlight2.intensity = 2;
-  spotlight2.castShadow = true;
-
-  // spotlight #3
-  var spotlight3 = new THREE.SpotLight('e3e9f0');
-  spotlight3.position.set(300,200,100);
-  spotlight3.shadowCameraVisible = true;
-  spotlight3.shadowDarkness = 0.15;
-  spotlight3.intensity = 2;
-  spotlight3.castShadow = true;
-  scene.add(spotlight3);
-  // change the direction this spotlight is facing
-
-*/
 
 // LIGHTS
 
@@ -341,16 +307,6 @@ const createFixed = (setting, fig) => {
 };
 
 
-
-/*const render = () => {
-  //move();
-
-  renderer.render(scene, camera);
-  requestAnimationFrame(() => render());
-
-};*/
-
-
 const render = () => {
   update();
   renderer.render(scene, camera);
@@ -371,6 +327,10 @@ const animate = () => {
 
 const onColorMove = (event) => {
   if (event.data.length === 0) {
+    movingUP = false;
+    movingDOWN = false;
+    movingLEFT = false;
+    movingRIGHT = false;
     return;
   }
 
@@ -388,15 +348,53 @@ const onColorMove = (event) => {
       if (maxRectArea > 0) {
         var rectCenterX = maxRect.x + (maxRect.width/2);
         var rectCenterY = maxRect.y + (maxRect.height/2);
+
+        //console.log(maxRect.x, maxRect.y);
+        // maxrect.x gaat van 0 tot 300 in spiegelbeeld
+        // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
+        // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
+
+        if (maxRect.x < 100) {
+          movingRIGHT = true;
+          movingLEFT = false;
+        }else if (maxRect.x >= 200) {
+          movingLEFT = true;
+          movingRIGHT = false;
+        }else if (maxRect.x >= 100 && maxRect.x < 200){
+          movingLEFT = false;
+          movingRIGHT = false;
+        }
+
+        // maxrect.x gaat van 0 tot 300 in spiegelbeeld
+        // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
+        // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
+
+        if (maxRect.y < 50) {
+          movingUP = true;
+          movingDOWN = false;
+        }else if (maxRect.y >= 150) {
+          movingDOWN = true;
+          movingUP = false;
+        }else if (maxRect.y >=50 && maxRect.y < 150){
+          movingDOWN = false;
+          movingUP = false;
+        }
+
+
+
+
+
+
+
         //mouseX = (rectCenterX - 160) * (window.innerWidth/320) * 10;
         //mouseY = (rectCenterY - 120) * (window.innerHeight/240) * 10;
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        /*context.clearRect(0, 0, canvas.width, canvas.height);
         context.strokeStyle = maxRect.color;
         context.strokeRect(maxRect.x, maxRect.y, maxRect.width, maxRect.height);
         context.font = '11px Helvetica';
         context.fillStyle = "#fff";
         context.fillText('x: ' + maxRect.x + 'px', maxRect.x + maxRect.width + 5, maxRect.y + 11);
-        context.fillText('y: ' + maxRect.y + 'px', maxRect.x + maxRect.width + 5, maxRect.y + 22);
+        context.fillText('y: ' + maxRect.y + 'px', maxRect.x + maxRect.width + 5, maxRect.y + 22);*/
       }
 
 };
