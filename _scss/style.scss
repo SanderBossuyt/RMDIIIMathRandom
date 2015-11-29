@@ -21,3 +21,9 @@ h1 {
   font-size: 1.3em;
 }
 
+
+#video, #canvas {
+    bottom: 0;
+    position: absolute;
+    z-index: 100;
+  }

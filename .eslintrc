@@ -191,8 +191,7 @@
     "no-negated-condition": 2
   },
   "globals": {
-    "THREE": true,
-    "tracking": true
+    "THREE": true
   }
 
 }
