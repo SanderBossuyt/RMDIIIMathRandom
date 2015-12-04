@@ -126,6 +126,22 @@ const init = () => {
   let thisFigure = figure[setting.figure];
   createFixed(setting, thisFigure);
 
+    var loader = new THREE.JSONLoader();
+
+loader.load(
+  'assets/platonic2.js',
+  function ( geometry, materials ) {
+    var material = new THREE.MeshFaceMaterial( materials );
+    MovingCube = new THREE.Mesh( geometry, material );
+    MovingCube.position.set(0, 25.1, 0);
+    MovingCube.castShadow = true;
+    MovingCube.receiveShadow = true;
+    scene.add( MovingCube );
+  }
+);
+
+
+
 
 };
 
@@ -395,6 +411,7 @@ const update = () => {
       MovingCube.rotation.set(0, 0, 0);
     }
   });
+
 
   var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
   var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
