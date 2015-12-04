@@ -30,21 +30,13 @@ var collidableMeshList = [];
 
 const init = () => {
 
-
-
   scene = new THREE.Scene();
 
-  console.log(levelInput);
-
   let level = levelInput;
-
-
 
   var colors = new tracking.ColorTracker(['magenta']);
   tracking.track('#video', colors, { camera: true });
   colors.on('track', onColorMove);
-
-  //console.log(helloworldTpl({name: 'Bossuyt Sander & Verheye Lieselot'}));
 
   let SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
   let VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
@@ -60,16 +52,52 @@ const init = () => {
     window.innerHeight
   );
 
-  console.log()
-
   new OrbitControls(camera);
   document.querySelector('main').appendChild(renderer.domElement);
 
-// must enable shadows on the renderer
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  // "shadow cameras" show the light source and direction
-// SKYBOX/FOG
+
+  makeScene();
+
+  var meshke = new THREE.MeshLambertMaterial( { color: '#f9f9f9', shading: THREE.FlatShading, overdraw: 0.5 } );
+  var MovingCubeGeom = new THREE.CubeGeometry(10, 10, 10);
+  MovingCube = new THREE.Mesh( MovingCubeGeom, meshke );
+
+  for(let i = 0; i < settings.length; i++){
+    if(settings[i].type === level){
+      levelArr.push(settings[i]);
+    }
+  }
+
+  let number = Math.floor((Math.random() * levelArr.length) + 0);
+  let pickLevelFigure = levelArr[number];
+  let setting = pickLevelFigure;
+
+  let thisFigure = figure[setting.figure];
+  createFixed(setting, thisFigure);
+
+
+  var loader = new THREE.JSONLoader();
+
+    loader.load(
+     'assets/platonic2.js',
+      function(geometry, materials){
+         var material = new THREE.MeshFaceMaterial( materials );
+        MovingCube = new THREE.Mesh( geometry, material );
+        MovingCube.position.set(0, 25.1, 0);
+        MovingCube.castShadow = true;
+        MovingCube.receiveShadow = true;
+        console.log("t: ",MovingCube);
+        scene.add( MovingCube);
+      }
+    );
+
+      animate();
+};
+
+const makeScene = () => {
+  // SKYBOX/FOG
   var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
   var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: '#000000', side: THREE.BackSide } );
   var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
@@ -106,52 +134,7 @@ const init = () => {
   ground.position.y = -33;
   scene.add( ground );
   ground.receiveShadow = true;
-  //MovingCube
-  var meshke = new THREE.MeshLambertMaterial( { color: '#f9f9f9', shading: THREE.FlatShading, overdraw: 0.5 } );
-  var MovingCubeGeom = new THREE.CubeGeometry(10, 10, 10);
-  MovingCube = new THREE.Mesh( MovingCubeGeom, meshke );
-  MovingCube.position.set(0, 25.1, 0);
-  MovingCube.castShadow = true;
-  MovingCube.receiveShadow = true;
-  scene.add(MovingCube);
-
-  animate();
-
-  for(let i = 0; i < settings.length; i++){
-
-    if(settings[i].type === level){
-      levelArr.push(settings[i]);
-    }
-
-  }
-
-  let number = Math.floor((Math.random() * levelArr.length) + 0);
-
-  let pickLevelFigure = levelArr[number];
-
-  let setting = pickLevelFigure;
-
-  let thisFigure = figure[setting.figure];
-  createFixed(setting, thisFigure);
-
-    var loader = new THREE.JSONLoader();
-
-loader.load(
-  'assets/platonic2.js',
-  function ( geometry, materials ) {
-    var material = new THREE.MeshFaceMaterial( materials );
-    MovingCube = new THREE.Mesh( geometry, material );
-    MovingCube.position.set(0, 25.1, 0);
-    MovingCube.castShadow = true;
-    MovingCube.receiveShadow = true;
-    scene.add( MovingCube );
-  }
-);
-
-
-
-
-};
+}
 
 
 
@@ -319,6 +302,7 @@ const onColorMove = (event) => {
 
 //-----------------------------------------------------------------------
 const update = () => {
+
   //console.log(fixedArr);
   if (fixedArr.length !== 0) {
     checkCollision();
@@ -430,7 +414,6 @@ const update = () => {
   camera.position.y = cameraOffset.y;
   camera.position.z = cameraOffset.z;
   camera.lookAt( MovingCube.position );
-
 
 
 /*var originPoint = MovingCube.position.clone();
