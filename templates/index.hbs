@@ -1,34 +1,38 @@
 <!-- deze file wordt in de startpagina ingeladen -->
-<main>
+<main class="center">
 
-<h1> connect the dots </h1>
+<section class="headsection">
+    <div class="logo"><span>Connect the dots</span></div>
 
-<p>Use any bright colored object to steer the rocket.
-Try steering through the circles and wait for the end.</p>
+  <p>Use a magenta colored object to steer the rocket.
+  Try steering through the circles and wait for the end.</p>
 
+</section>
 <form class="form" method="post" action="/connectthedots">
+<div class="level">
 
+  <input class="firstinput" type="submit" name="level" value="easy" />
+  <input class="firstinput" type="submit" name="level" value="medium" />
+  <input class="firstinput" type="submit" name="level" value="insane" />
 
-<input type="submit" name="level" value="easy" />
-<input type="submit" name="level" value="medium" />
-<input type="submit" name="level" value="hard" />
+</div>
 
+<div class="controls hidden">
+  <input class="gamemode" type="submit" name="mode" value="keyboard" />
+  <input class="gamemode" type="submit" name="mode" value="webcam" />
 
+</div>
+<input class="submit hidden" type="submit" name="level" value="easy" />
 </form>
-
-
-
 </main>
+
 
 {{#section 'head'}}
 
 {{/section}}
 
 
-
-
 {{#section 'scripts'}}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.js"></script>
-  <!--<script src="../bower_components/tracking/build/tracking-min.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+  <script type="text/javascript" src="js/homepageScript.js"></script>
 {{/section}}

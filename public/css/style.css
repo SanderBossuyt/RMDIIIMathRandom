@@ -61,16 +61,53 @@ main {
 }
 
 body {
-  color: #fff;
+  color: #cfdde1;
+  text-align: center;
+  line-height: 2.7em;
   font-size: 62.5%;
-  font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
-  background-color: #181849;
+  font-family: 'outagecut', Arial, sans-serif;
+  background-color: #091741;
+  background-image: url("/assets/patterns/spacepattern.png");
+}
+
+button:focus {
+  outline: 0;
+}
+
+submit:focus,
+input:focus {
+  outline: none;
+}
+
+::-moz-selection {
+  color: #091741;
+  background: #bed5e4;
+}
+
+::selection {
+  color: #091741;
+  background: #bed5e4;
 }
 
 main {
-  padding-top: 10px;
   width: 100%;
   font-size: 1.8em;
+}
+
+.logo {
+  background-image: url("/assets/logo.png");
+  background-repeat: none;
+  width: 380px;
+  height: 250px;
+  margin: 70px auto;
+}
+
+.logo span {
+  visibility: hidden;
+}
+
+.center {
+  margin: 0 auto;
 }
 
 h1 {
@@ -79,11 +116,164 @@ h1 {
 }
 
 #video, #canvas {
-  bottom: 0;
+  left: 30px;
+  bottom: 30px;
   position: absolute;
   z-index: 100;
 }
 
+#video {
+  background: #8BAABE;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  /* Safari and Chrome */
+  -moz-transform: rotateY(180deg);
+  /* Firefox */
+  border: 8px solid #8BAABE;
+  border-radius: 6px;
+}
+
 .hidden {
   visibility: hidden;
+  opacity: 0;
+  transition: 0.3s ease-in-out;
+}
+
+.unhidden {
+  visibility: visible;
+  opacity: 1;
+  transition: 0.3s ease-in-out;
+}
+
+.selected {
+  color: #232323;
+}
+
+.level {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.controls {
+  width: 530px;
+  margin: 0 auto;
+}
+
+.headsection {
+  width: 620px;
+  margin: 40px auto;
+}
+
+input[name=level] {
+  font-size: 1.7em;
+  font-family: 'outagecut', Helvetica, Arial, sans-serif;
+  color: #f9f9f9;
+  margin: 15px 28px;
+  width: 180px;
+  height: 100px;
+  background: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.gamemode {
+  font-family: 'outagecut', Helvetica, Arial, sans-serif;
+  color: #f9f9f9;
+  margin: 45px 40px 15px 40px;
+  width: 180px;
+  height: 180px;
+  background: none;
+  border: 3px solid #94b5c9;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.form [value=easy] {
+  border: 3px solid #49C16F;
+  transition: 0.2s ease-in-out;
+}
+
+.form [value=easy]:hover {
+  background-color: #49C16F;
+  transition: 0.2s ease-in-out;
+}
+
+.form [value=medium] {
+  border: 3px solid #DF965C;
+  transition: 0.2s ease-in-out;
+}
+
+.form [value=medium]:hover {
+  background-color: #DF965C;
+  transition: 0.2s ease-in-out;
+}
+
+.form [value=insane] {
+  border: 3px solid #D74C4F;
+  transition: 0.2s ease-in-out;
+}
+
+.form [value=insane]:hover {
+  background-color: #D74C4F;
+  transition: 0.2s ease-in-out;
+}
+
+.form [value=keyboard] {
+  background-image: url("/assets/keys.png");
+}
+
+.form [value=keyboard]:hover {
+  background-color: #243461;
+  transition: 0.2s ease-in-out;
+}
+
+.form [value=webcam] {
+  background-image: url("/assets/cam.png");
+}
+
+.form [value=webcam]:hover {
+  background-color: #243461;
+  transition: 0.2s ease-in-out;
+}
+
+.form [value=start] {
+  margin-bottom: 50px;
+  color: #0C2349;
+  border: none;
+  font-size: 0.00001em;
+  background-color: none;
+  background-image: url("/assets/btnsubmithome.png");
+  width: 340px;
+  height: 140px;
+}
+
+.form [value=start]:hover {
+  background-image: url("/assets/btnsubmithomehovering.png");
+  transition: 0.2s ease-in-out;
+}
+
+.infobtn {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background-image: url("/assets/info.png");
+  transition: 0.2s ease-in-out;
+  width: 40px;
+  height: 40px;
+}
+
+.infobtn:hover {
+  cursor: pointer;
+  background-image: url("/assets/infohover.png");
+  transition: 0.2s ease-in-out;
+}
+
+.arrowcontrols {
+  background-image: url("/assets/controls.png");
+  width: 320px;
+  height: 240px;
+  left: 30px;
+  bottom: 30px;
+  position: absolute;
+  z-index: 102;
 }
