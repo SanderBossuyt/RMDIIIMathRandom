@@ -4,9 +4,9 @@ module.exports = [
 
   {
     method: 'GET',
-    path: '/hello',
+    path: '/api/level',
     handler: (request, reply) => reply({
-      'data': 'hello'
+      level: request.session.get('level')
     })
   }
 

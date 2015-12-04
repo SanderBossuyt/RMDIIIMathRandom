@@ -12,6 +12,7 @@ var context = canvas.getContext('2d');
 
 let scene, camera, renderer, MovingCube;
 let clock = new THREE.Clock();
+let levelInput;
 
 let movingUP = false;
 let movingDOWN = false;
@@ -29,9 +30,14 @@ var collidableMeshList = [];
 
 const init = () => {
 
+
+
   scene = new THREE.Scene();
-  let classes = document.querySelector('.level').classList;
-  let level = classes[1];
+
+  console.log(levelInput);
+
+  let level = levelInput;
+
 
 
   var colors = new tracking.ColorTracker(['magenta']);
@@ -53,6 +59,8 @@ const init = () => {
     window.innerWidth,
     window.innerHeight
   );
+
+  console.log()
 
   new OrbitControls(camera);
   document.querySelector('main').appendChild(renderer.domElement);
@@ -144,6 +152,9 @@ loader.load(
 
 
 };
+
+
+
 
 //-----------------------------------------------------------------------
 const createFixed = (setting, fig) => {
@@ -483,7 +494,19 @@ const checkCollision = () => {
 
 //-----------------------------------------------
 
-init();
+ $.getJSON( "api/level")
+  .done(function( data ) {
+    console.log("level:", data.level);
+    levelInput = data.level;
+
+    init();
+
+  })
+  .fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    console.log( "Request Failed: " + err );
+  });
+
 
 //---------------------------------------------->END
 

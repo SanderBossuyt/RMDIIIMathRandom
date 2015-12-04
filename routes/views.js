@@ -29,10 +29,8 @@ module.exports = [
     method: 'POST',
     path: '/connectthedots',
     handler: (request, reply) => {
-      console.log(request.payload.level);
-      if(request.payload.level === 'easy'){
-        //script(request.payload.level);
-      }
+      request.session.set('level', request.payload.level);
+      //checks als de level leeg is redirecten
       return reply.view('game', {
         title: 'connect the dots',
         level: request.payload.level
