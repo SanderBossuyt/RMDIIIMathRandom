@@ -81,7 +81,7 @@ const init = () => {
   var loader = new THREE.JSONLoader();
 
     loader.load(
-     'assets/platonic2.js',
+     'assets/final.js',
       function(geometry, materials){
          var material = new THREE.MeshFaceMaterial( materials );
         MovingCube = new THREE.Mesh( geometry, material );
@@ -103,7 +103,7 @@ const makeScene = () => {
   var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
   scene.add(skyBox);
   scene.fog = new THREE.FogExp2( '#0d305b', 0.00025 );
-// LIGHTS
+  // LIGHTS
   var hemiLight = new THREE.HemisphereLight( '#4c6286', '#4c6286', 0.6 );
   hemiLight.color.setHSL( 0.6, 1, 0.6 );
   hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
@@ -124,7 +124,7 @@ const makeScene = () => {
   dirLight.shadowCameraBottom = -d;
   dirLight.shadowCameraFar = 3500;
   dirLight.shadowBias = -0.0001;
-  //dirLight.shadowCameraVisible = true;
+
   // GROUND
   var groundGeo = new THREE.PlaneBufferGeometry( 10000, 10000 );
   var groundMat = new THREE.MeshPhongMaterial( { color: '#283c5d', specular: '#4c6286' } );
@@ -135,7 +135,6 @@ const makeScene = () => {
   scene.add( ground );
   ground.receiveShadow = true;
 }
-
 
 
 
