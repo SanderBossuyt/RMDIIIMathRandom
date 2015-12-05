@@ -14,6 +14,8 @@ let scene, camera, renderer, MovingCube;
 let clock = new THREE.Clock();
 let levelInput;
 
+let controlChoice;
+
 let movingUP = false;
 let movingDOWN = false;
 let movingLEFT = false;
@@ -30,13 +32,12 @@ var collidableMeshList = [];
 
 const init = () => {
 
+  //when clicking the info button, show/hide the controls
+  infoInteraction();
+
   scene = new THREE.Scene();
 
   let level = levelInput;
-
-  var colors = new tracking.ColorTracker(['magenta']);
-  tracking.track('#video', colors, { camera: true });
-  colors.on('track', onColorMove);
 
   let SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
   let VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
@@ -52,7 +53,7 @@ const init = () => {
     window.innerHeight
   );
 
-  new OrbitControls(camera);
+  /*new OrbitControls(camera);*/
   document.querySelector('main').appendChild(renderer.domElement);
 
   renderer.shadowMap.enabled = true;
@@ -80,21 +81,39 @@ const init = () => {
 
   var loader = new THREE.JSONLoader();
 
-    loader.load(
-     'assets/final.js',
-      function(geometry, materials){
-         var material = new THREE.MeshFaceMaterial( materials );
-        MovingCube = new THREE.Mesh( geometry, material );
-        MovingCube.position.set(0, 25.1, 0);
-        MovingCube.castShadow = true;
-        MovingCube.receiveShadow = true;
-        console.log("t: ",MovingCube);
-        scene.add( MovingCube);
-      }
-    );
+  loader.load(
+   'assets/final.js',
+    function(geometry, materials){
+       var material = new THREE.MeshFaceMaterial( materials );
+      MovingCube = new THREE.Mesh( geometry, material );
+      MovingCube.position.set(0, 25.1, 0);
+      MovingCube.castShadow = true;
+      MovingCube.receiveShadow = true;
+      //console.log("t: ",MovingCube);
+      scene.add( MovingCube);
+    }
+  );
 
-      animate();
+
+  if (controlChoice == 'keyboard') {
+    animateKeyboard();
+    $('#video').addClass("hidden");
+    $('#canvas').addClass('hidden');
+    $('.arrowcontrols').addClass('hidden');
+
+  } else if (controlChoice == 'webcam') {
+    $('.infokeyboard').addClass('infowebcam');
+    $('.infowebcam').removeClass('infokeyboard');
+    var colors = new tracking.ColorTracker(['magenta']);
+    tracking.track('#video', colors, { camera: true });
+    colors.on('track', onColorMove);
+    animateWebcam();
+  }
+
+
 };
+
+//--------------------------------------------------------------------------
 
 const makeScene = () => {
   // SKYBOX/FOG
@@ -161,29 +180,58 @@ const createFixed = (setting, fig) => {
 
 };
 
+
+
+
+
+
+
+
+
+
 //-----------------------------------------------------------------------
-const render = () => {
+const animateKeyboard = () => {
+  requestAnimationFrame(() => animateKeyboard());
+  renderKeyboard();
+};
+//-----------------------------------------------------------------------
+const renderKeyboard = () => {
+  update();
+  updateForKeyboard();
+  renderer.render(scene, camera);
+};
+
+
+
+//-----------------------------------------------------------------------
+const animateWebcam = () => {
+  requestAnimationFrame(() => animateWebcam());
+  renderWebcam();
+};
+//-----------------------------------------------------------------------
+const renderWebcam = () => {
   update();
   renderer.render(scene, camera);
 };
 
-//-----------------------------------------------------------------------
-const animate = () => {
-  requestAnimationFrame(() => animate());
-  render();
-};
+
+
+
+
+
+
 
 //-----------------------------------------------------------------------
 const onColorMove = (event) => {
   if (event.data.length === 0) {
-    /*movingUP = false;
+    movingUP = false;
     movingDOWN = false;
     movingLEFT = false;
     movingRIGHT = false;
     rotateUP = false;
     rotateDOWN = false;
     rotateLEFT = false;
-    rotateRIGHT = false;*/
+    rotateRIGHT = false;
     return;
   }
 
@@ -192,125 +240,117 @@ const onColorMove = (event) => {
   var rectWidth, rectHeight;
 
   event.data.forEach(function(rect) {
-        console.log(rect.width, rect.height);
-        if (rect.width * rect.height > maxRectArea){
-          maxRectArea = rect.width * rect.height;
-          rectWidth = rect.width;
-          rectHeight = rect.height;
-          maxRect = rect;
-        }
-      });
-      if (maxRectArea > 0) {
-        var rectCenterX = maxRect.x + (maxRect.width/2);
-        var rectCenterY = maxRect.y + (maxRect.height/2);
+    //console.log(rect.width, rect.height);
+    if (rect.width * rect.height > maxRectArea){
+      maxRectArea = rect.width * rect.height;
+      rectWidth = rect.width;
+      rectHeight = rect.height;
+      maxRect = rect;
+    }
+  });
+
+  if (maxRectArea > 0) {
+    var rectCenterX = maxRect.x + (maxRect.width/2);
+    var rectCenterY = maxRect.y + (maxRect.height/2);
 
 
 
 
-        if (rectWidth < 45) {
-          rotateUP = false;
-          rotateDOWN = true;
-        }else if (rectHeight >= 150){
-          rotateDOWN = false;
-          rotateUP = true;
-        }else if (rectWidth >= 45 && rectHeight <150){
-          rotateDOWN = false;
-          rotateUP = false;
-        }
+    if (rectWidth < 45) {
+      rotateUP = false;
+      rotateDOWN = true;
+    }else if (rectHeight >= 150){
+      rotateDOWN = false;
+      rotateUP = true;
+    }else if (rectWidth >= 45 && rectHeight <150){
+      rotateDOWN = false;
+      rotateUP = false;
+    }
 
 
 
-        //console.log(maxRect.x, maxRect.y);
-        // maxrect.x gaat van 0 tot 300 in spiegelbeeld
-        // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
-        // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
+    //console.log(maxRect.x, maxRect.y);
+    // maxrect.x gaat van 0 tot 300 in spiegelbeeld
+    // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
+    // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
 
 
-        if (maxRect.x < 70) {
-          movingRIGHT = true;
-          movingLEFT = false;
-        }else if (maxRect.x >= 230) {
-          movingLEFT = true;
-          movingRIGHT = false;
-        }else if (maxRect.x >= 70 && maxRect.x < 230){
-          movingLEFT = false;
-          movingRIGHT = false;
-        }
+    if (maxRect.x < 70) {
+      movingRIGHT = true;
+      movingLEFT = false;
+    }else if (maxRect.x >= 230) {
+      movingLEFT = true;
+      movingRIGHT = false;
+    }else if (maxRect.x >= 70 && maxRect.x < 230){
+      movingLEFT = false;
+      movingRIGHT = false;
+    }
 
-        // maxrect.x gaat van 0 tot 300 in spiegelbeeld
-        // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
-        // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
+    // maxrect.x gaat van 0 tot 300 in spiegelbeeld
+    // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
+    // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
 
-        if (maxRect.y < 30) {
-          movingUP = true;
-          movingDOWN = false;
-        }else if (maxRect.y >= 170) {
-          movingDOWN = true;
-          movingUP = false;
-        }else if (maxRect.y >=30 && maxRect.y < 170){
-          movingDOWN = false;
-          movingUP = false;
-        }
+    if (maxRect.y < 30) {
+      movingUP = true;
+      movingDOWN = false;
+    }else if (maxRect.y >= 170) {
+      movingDOWN = true;
+      movingUP = false;
+    }else if (maxRect.y >=30 && maxRect.y < 170){
+      movingDOWN = false;
+      movingUP = false;
+    }
 
-        //checks voor rotatie bij bewegingen - left right
+    //checks voor rotatie bij bewegingen - left right
 
-        if(maxRect.y < 30){
-          if (maxRect.x < 70) {
-            rotateRIGHT = true;
-          }else {
-            rotateRIGHT = false;
-          }
-
-          if(maxRect.x >=230){
-            rotateLEFT = true;
-          } else {
-            rotateLEFT = false;
-          }
-        } else if(maxRect.y >= 30 && maxRect.y < 170){
-          if (maxRect.x < 70) {
-            rotateRIGHT = true;
-          }else {
-            rotateRIGHT = false;
-          }
-
-          if(maxRect.x >=230){
-            rotateLEFT = true;
-          } else {
-            rotateLEFT = false;
-          }
-        }
-
-
-
-
-
-
-
-        //mouseX = (rectCenterX - 160) * (window.innerWidth/320) * 10;
-        //mouseY = (rectCenterY - 120) * (window.innerHeight/240) * 10;
-        /*context.clearRect(0, 0, canvas.width, canvas.height);
-        context.strokeStyle = maxRect.color;
-        context.strokeRect(maxRect.x, maxRect.y, maxRect.width, maxRect.height);
-        context.font = '11px Helvetica';
-        context.fillStyle = "#fff";
-        context.fillText('x: ' + maxRect.x + 'px', maxRect.x + maxRect.width + 5, maxRect.y + 11);
-        context.fillText('y: ' + maxRect.y + 'px', maxRect.x + maxRect.width + 5, maxRect.y + 22);*/
+    if(maxRect.y < 30){
+      if (maxRect.x < 70) {
+        rotateRIGHT = true;
+      }else {
+        rotateRIGHT = false;
       }
 
+      if(maxRect.x >=230){
+        rotateLEFT = true;
+      } else {
+        rotateLEFT = false;
+      }
+    } else if(maxRect.y >= 30 && maxRect.y < 170){
+      if (maxRect.x < 70) {
+        rotateRIGHT = true;
+      }else {
+        rotateRIGHT = false;
+      }
+
+      if(maxRect.x >=230){
+        rotateLEFT = true;
+      } else {
+        rotateLEFT = false;
+      }
+    }
+
+
+  }
+
 };
+
+
+
+
+
+
+
+
+
+
 
 //-----------------------------------------------------------------------
 const update = () => {
 
-  //console.log(fixedArr);
   if (fixedArr.length !== 0) {
     checkCollision();
   }
 
-
-  //var delta = clock.getDelta();
-  //var moveDistance = 0.2 * delta;
-  //var rotateAngle = Math.PI / 170 * delta;   // pi/2 radians (90 degrees) per second
   var rotation_matrix = new THREE.Matrix4().identity();
 
   if (movingUP){
@@ -339,7 +379,20 @@ const update = () => {
   }
 
 
-  document.addEventListener('keyup', function(event){
+  var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
+  var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
+  camera.position.x = cameraOffset.x;
+  camera.position.y = cameraOffset.y;
+  camera.position.z = cameraOffset.z;
+  camera.lookAt( MovingCube.position );
+
+
+};
+
+
+const updateForKeyboard = () => {
+
+document.addEventListener('keyup', function(event){
 
     if(event.keyCode === 90){ //W UP
      //MovingCube.translateZ(-moveDistance);
@@ -405,56 +458,15 @@ const update = () => {
       MovingCube.rotation.set(0, 0, 0);
     }
   });
-
-
-  var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
-  var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
-  camera.position.x = cameraOffset.x;
-  camera.position.y = cameraOffset.y;
-  camera.position.z = cameraOffset.z;
-  camera.lookAt( MovingCube.position );
-
-
-/*var originPoint = MovingCube.position.clone();
-
-for (var vertexIndex = 0; vertexIndex < MovingCube.geometry.vertices.length; vertexIndex++){
-  var localVertex = MovingCube.geometry.vertices[vertexIndex].clone();
-  var globalVertex = localVertex.applyMatrix4( MovingCube.matrix );
-  var directionVector = globalVertex.sub( MovingCube.position );
-
-  var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-  var collisionResults = ray.intersectObjects( collidableMeshList );
-  //if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ){
-    //appendText(" Hit ");
-    //console.log("hit hit hit");
-  //}
-
-  }
-*//*
-  var originPoint = MovingCube.position.clone();
-
-
-for (var vertexIndex = 0; vertexIndex < MovingCube.geometry.vertices.length; vertexIndex++)
-  {
-    var localVertex = MovingCube.geometry.vertices[vertexIndex].clone();
-    var globalVertex = localVertex.applyMatrix4( MovingCube.matrix );
-    var directionVector = globalVertex.sub( MovingCube.position );
-    c
-    var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-    var collisionResults = ray.intersectObjects( collidableMeshList );
-    if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
-      appendText(" Hit ");
-  }*/
-
-
-
-
 };
+
+
+
 
 //---------------between function for collision check--------------------
 Number.prototype.between = function(a, b) {
   var min = Math.min.apply(Math, [a, b]),
-    max = Math.max.apply(Math, [a, b]);
+  max = Math.max.apply(Math, [a, b]);
   return this > min && this < max;
 };
 
@@ -474,19 +486,28 @@ const checkCollision = () => {
   }
 };
 
+//-----------------------------------------------------------------------
+const infoInteraction = () => {
+  $('.infobtn').on('click', function(e){
+    console.log('clicked');
+    $('.info').toggleClass( 'hidden' );
+  });
+};
+
 //-----------------------------------------------
 
- $.getJSON( "api/level")
+$.getJSON( 'api/level')
   .done(function( data ) {
-    console.log("level:", data.level);
+    console.log('level:', data.level);
     levelInput = data.level;
+    controlChoice = 'keyboard';
 
     init();
 
   })
   .fail(function( jqxhr, textStatus, error ) {
-    var err = textStatus + ", " + error;
-    console.log( "Request Failed: " + err );
+    var err = textStatus + ', ' + error;
+    console.log( 'Request Failed: ' + err );
   });
 
 

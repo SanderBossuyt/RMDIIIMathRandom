@@ -228,3 +228,23 @@ input[name=level] {
   z-index: 102;
 }
 
+.infokeyboard {
+  background-image: url('/assets/controlskeyboard.png');
+  width: 500px;
+  height: 420px;
+  left: 70px;
+  top: 10px;
+  position: absolute;
+  z-index: 102;
+}
+
+.infowebcam {
+  background-image: url('/assets/controlswebcam.png');
+  width: 500px;
+  height: 420px;
+  left: 70px;
+  top: 10px;
+  position: absolute;
+  z-index: 102;
+}
+
