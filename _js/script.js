@@ -189,45 +189,16 @@ const makeScene = () => {
   dirLight.shadowCameraFar = 3500;
   dirLight.shadowBias = -0.0001;
 
-
-
-  /*// GROUND
-  var groundGeo = new THREE.PlaneBufferGeometry( 10000, 10000 );
-  var groundMat = new THREE.MeshPhongMaterial( { color: '#283c5d', specular: '#4c6286' } );
-  //groundMat.color.setHSL( 0.03, 1, 0.75 );
-  var ground = new THREE.Mesh( groundGeo, groundMat );
-  ground.rotation.x = -Math.PI/2;
-  ground.position.y = -33;
-  scene.add( ground );
-  ground.receiveShadow = true;*/
-
-
   var particle, e;
-
-  // we're gonna move from z position -1000 (far away)
-  // to 1000 (where the camera is) and add a random particle at every pos.
-  for ( var zpos= -3000; zpos < 3000; zpos+=7 ) {
-
+  for ( var zpos = -1000; zpos < 800; zpos+=2 ) {
     particle = new THREE.Particle(e);
-
-    // give it a random x and y position between -500 and 500
     particle.position.x = Math.random() * 6000 - 3000;
     particle.position.y = Math.random() * 6000 - 3000;
-
-    // set its z position
     particle.position.z = zpos;
-
-    // scale it up a bit
-    particle.scale.x = particle.scale.y = 2.1;
-
-    // add it to the scene
+    particle.scale.x = particle.scale.y = 1.6;
     scene.add( particle );
-
-
   }
-
-
-}
+};
 
 
 
@@ -516,9 +487,9 @@ const infoInteraction = () => {
 
 $.getJSON( 'api/level')
   .done(function( data ) {
-    console.log('level:', data.level);
+    console.log('level:', data.level, '  playmode:', data.playmode);
     levelInput = data.level;
-    controlChoice = 'keyboard';
+    controlChoice = data.playmode;
 
     init();
 

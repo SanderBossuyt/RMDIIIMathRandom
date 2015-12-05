@@ -90,6 +90,7 @@ input:focus {
 }
 
 main {
+  height: 100%;
   width: 100%;
   font-size: 1.8em;
 }
@@ -126,9 +127,7 @@ h1 {
   background: #f9f9f9;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
-  /* Safari and Chrome */
   -moz-transform: rotateY(180deg);
-  /* Firefox */
   border: 8px solid #f9f9f9;
   border-radius: 6px;
 }
@@ -151,12 +150,12 @@ h1 {
 
 .level {
   width: 960px;
-  margin: 0 auto;
+  margin: 60px auto;
 }
 
 .controls {
-  width: 530px;
-  margin: 0 auto;
+  width: 800px;
+  margin: 140px auto;
 }
 
 .headsection {
@@ -164,16 +163,26 @@ h1 {
   margin: 40px auto;
 }
 
-input[name=level] {
+input[type="radio"] {
+  display: none;
+}
+
+input[type="radio"] + label {
   font-size: 1.7em;
   font-family: 'outagecut', Helvetica, Arial, sans-serif;
   color: #f9f9f9;
   margin: 15px 28px;
+  padding: 15px 28px;
   width: 180px;
-  height: 100px;
+  height: 300px;
   background: none;
   cursor: pointer;
   border-radius: 6px;
+}
+
+input[type="radio"]:checked + label {
+  border: 3px solid #f9f9f9;
+  transition: 0.2s ease-in-out;
 }
 
 .gamemode {
@@ -188,50 +197,55 @@ input[name=level] {
   border-radius: 6px;
 }
 
-.form [value=easy] {
+.form [value=easy] + label {
   border: 3px solid #49C16F;
   transition: 0.2s ease-in-out;
 }
 
-.form [value=easy]:hover {
+.form [value=easy] + label:hover {
   background-color: #49C16F;
   transition: 0.2s ease-in-out;
 }
 
-.form [value=medium] {
+.form [value=medium] + label {
   border: 3px solid #DF965C;
   transition: 0.2s ease-in-out;
 }
 
-.form [value=medium]:hover {
+.form [value=medium] + label:hover {
   background-color: #DF965C;
   transition: 0.2s ease-in-out;
 }
 
-.form [value=insane] {
+.form [value=insane] + label {
   border: 3px solid #D74C4F;
   transition: 0.2s ease-in-out;
 }
 
-.form [value=insane]:hover {
+.form [value=insane] + label:hover {
   background-color: #D74C4F;
   transition: 0.2s ease-in-out;
 }
 
-.form [value=keyboard] {
+.form [value=keyboard] + label {
+  margin-top: 100px;
+  padding: 70px 90px;
   background-image: url("/assets/keys.png");
 }
 
-.form [value=keyboard]:hover {
+.form [value=keyboard] + label:hover {
   background-color: #243461;
   transition: 0.2s ease-in-out;
 }
 
-.form [value=webcam] {
+.form [value=webcam] + label {
+  margin-top: 100px;
+  padding: 70px 90px;
+  height: 300px;
   background-image: url("/assets/cam.png");
 }
 
-.form [value=webcam]:hover {
+.form [value=webcam] + label:hover {
   background-color: #243461;
   transition: 0.2s ease-in-out;
 }
@@ -241,7 +255,7 @@ input[name=level] {
   color: #0C2349;
   border: none;
   font-size: 0.00001em;
-  background-color: none;
+  background-color: #091642;
   background-image: url("/assets/btnsubmithome.png");
   width: 340px;
   height: 140px;

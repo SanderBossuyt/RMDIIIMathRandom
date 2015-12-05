@@ -11,18 +11,27 @@
 <form class="form" method="post" action="/connectthedots">
 <div class="level">
 
-  <input class="firstinput" type="submit" name="level" value="easy" />
-  <input class="firstinput" type="submit" name="level" value="medium" />
-  <input class="firstinput" type="submit" name="level" value="insane" />
+
+  <input class="firstinput" id="easy" type="radio" name="level" value="easy" />
+  <label for="easy" >easy</label>
+
+  <input class="firstinput" id="medium" type="radio" name="level" value="medium" />
+  <label for="medium" >medium</label>
+
+  <input class="firstinput" id="insane" type="radio" name="level" value="insane" />
+  <label for="insane">insane</label>
 
 </div>
 
 <div class="controls hidden">
-  <input class="gamemode" type="submit" name="mode" value="keyboard" />
-  <input class="gamemode" type="submit" name="mode" value="webcam" />
+
+  <input class="gamemode" id="keyboard" type="radio" name="mode" value="keyboard" />
+  <label for="keyboard"></label>
+  <input class="gamemode" id="webcam" type="radio" name="mode" value="webcam" />
+  <label for="webcam"></label>
 
 </div>
-<input class="submit hidden" type="submit" name="level" value="easy" />
+<input class="submit hidden" type="submit" name="submit" value="start" />
 </form>
 </main>
 
