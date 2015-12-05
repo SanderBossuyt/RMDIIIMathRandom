@@ -11,7 +11,7 @@
         "uvs"           : 704,
         "materials"     : 2
     },
-    "scale" : 1.000000,
+    "scale" : 1.70000,
     "materials": [	{
 	"DbgColor" : 15658734,
 	"DbgIndex" : 0,

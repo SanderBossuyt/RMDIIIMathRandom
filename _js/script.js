@@ -3,17 +3,16 @@
 import {settings, figure} from './data/';
 import helloworldTpl from '../_hbs/helloworld';
 import Torus from './modules/render/Torus';
-var Tracking = require('tracking/build/tracking.js');
+let Tracking = require('tracking/build/tracking.js');
 let OrbitControls = require('three-orbit-controls')(THREE);
 
-var video = document.getElementById('video');
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
+let video = document.getElementById('video');
+let canvas = document.getElementById('canvas');
+let context = canvas.getContext('2d');
 
 let scene, camera, renderer, MovingCube;
-let clock = new THREE.Clock();
-let levelInput;
 
+let levelInput;
 let controlChoice;
 
 let movingUP = false;
@@ -26,8 +25,11 @@ let rotateLEFT = false;
 let rotateRIGHT = false;
 
 let fixedArr = [];
+let checkCollisionArr = [];
 let levelArr = [];
-var collidableMeshList = [];
+let collidableMeshList = [];
+
+let number = 1;
 
 
 const init = () => {
@@ -94,6 +96,46 @@ const init = () => {
     }
   );
 
+  /*var loaderPlanet = new THREE.JSONLoader();
+
+  loaderPlanet.load(
+   'assets/bam.js',
+    function(geometry, materials){
+      let materialss = new THREE.MeshBasicMaterial( { color: '#D74C4F' } );
+       var material = new THREE.MeshFaceMaterial( materials );
+      var planet = new THREE.Mesh( geometry, materialss );
+      planet.position.set(0, 0, 0);
+      planet.castShadow = true;
+      planet.receiveShadow = true;
+      //console.log("t: ",planet);
+      scene.add( planet);
+    }
+  );*/
+
+  var loaderPlane = new THREE.JSONLoader();
+
+  loaderPlane.load(
+   'assets/plane.js',
+    function(geometry, materials){
+      let materialss = new THREE.MeshBasicMaterial( { color: '#8BAABE' } );
+       //var material = new THREE.MeshFaceMaterial( materials );
+      /*MovingCube = new THREE.Mesh( geometry, material );
+      MovingCube.position.set(0, 25.1, 0);
+      MovingCube.castShadow = true;
+      MovingCube.receiveShadow = true;
+      //console.log("t: ",MovingCube);
+      scene.add( MovingCube);*/
+
+  var ground = new THREE.Mesh( geometry, materialss );
+  //ground.rotation.x = -Math.PI/2;
+  //ground.position.y = -33;
+  ground.position.set(0, -123, 0);
+  scene.add( ground );
+  ground.receiveShadow = true;
+
+    }
+  );
+
 
   if (controlChoice == 'keyboard') {
     animateKeyboard();
@@ -121,22 +163,25 @@ const makeScene = () => {
   var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: '#000000', side: THREE.BackSide } );
   var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
   scene.add(skyBox);
-  scene.fog = new THREE.FogExp2( '#0d305b', 0.00025 );
+  scene.fog = new THREE.FogExp2( '#0d305b', 0.00019 );
   // LIGHTS
   var hemiLight = new THREE.HemisphereLight( '#4c6286', '#4c6286', 0.6 );
   hemiLight.color.setHSL( 0.6, 1, 0.6 );
   hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
   hemiLight.position.set( 0, 500, 0 );
   scene.add( hemiLight );
+
+
   var dirLight = new THREE.DirectionalLight( '#4c6286', 1 );
   dirLight.color.setHSL( 0.1, 1, 0.75 );
-  dirLight.position.set( -1, 1.75, 1 );
+  dirLight.position.set( -1, 1.5, 1 );
   dirLight.position.multiplyScalar( 50 );
   scene.add( dirLight );
   dirLight.castShadow = true;
   dirLight.shadowMapWidth = 2048;
   dirLight.shadowMapHeight = 2048;
-  var d = 50;
+
+  var d = 90;
   dirLight.shadowCameraLeft = -d;
   dirLight.shadowCameraRight = d;
   dirLight.shadowCameraTop = d;
@@ -144,7 +189,9 @@ const makeScene = () => {
   dirLight.shadowCameraFar = 3500;
   dirLight.shadowBias = -0.0001;
 
-  // GROUND
+
+
+  /*// GROUND
   var groundGeo = new THREE.PlaneBufferGeometry( 10000, 10000 );
   var groundMat = new THREE.MeshPhongMaterial( { color: '#283c5d', specular: '#4c6286' } );
   //groundMat.color.setHSL( 0.03, 1, 0.75 );
@@ -152,9 +199,10 @@ const makeScene = () => {
   ground.rotation.x = -Math.PI/2;
   ground.position.y = -33;
   scene.add( ground );
-  ground.receiveShadow = true;
-}
+  ground.receiveShadow = true;*/
 
+
+}
 
 
 //-----------------------------------------------------------------------
@@ -175,18 +223,11 @@ const createFixed = (setting, fig) => {
     scene.add(torus.render());
     collidableMeshList.push(torus);
     fixedArr.push(torus);
+    checkCollisionArr.push(torus);
 
   }
 
 };
-
-
-
-
-
-
-
-
 
 
 //-----------------------------------------------------------------------
@@ -215,12 +256,6 @@ const renderWebcam = () => {
 };
 
 
-
-
-
-
-
-
 //-----------------------------------------------------------------------
 const onColorMove = (event) => {
   if (event.data.length === 0) {
@@ -240,11 +275,8 @@ const onColorMove = (event) => {
   var rectWidth, rectHeight;
 
   event.data.forEach(function(rect) {
-    //console.log(rect.width, rect.height);
     if (rect.width * rect.height > maxRectArea){
       maxRectArea = rect.width * rect.height;
-      rectWidth = rect.width;
-      rectHeight = rect.height;
       maxRect = rect;
     }
   });
@@ -253,57 +285,37 @@ const onColorMove = (event) => {
     var rectCenterX = maxRect.x + (maxRect.width/2);
     var rectCenterY = maxRect.y + (maxRect.height/2);
 
+    movingUP = true;
 
+    if (maxRect.x < 90) {
+      rotateRIGHT = true;
+      rotateLEFT = false;
+      //movingUP = false;
+    }else if (maxRect.x >= 200) {
+      rotateLEFT = true;
+      rotateRIGHT = false;
+      //movingUP = false;
+    }else if (maxRect.x >= 90 && maxRect.x < 200){
+      rotateLEFT = false;
+      rotateRIGHT = false;
+      //movingUP = false;
+    }
 
-
-    if (rectWidth < 45) {
-      rotateUP = false;
-      rotateDOWN = true;
-    }else if (rectHeight >= 150){
-      rotateDOWN = false;
+    if (maxRect.y < 50) {
       rotateUP = true;
-    }else if (rectWidth >= 45 && rectHeight <150){
+      rotateDOWN = false;
+      //movingUP = false;
+    }else if (maxRect.y >= 150) {
+      rotateDOWN = true;
+      rotateUP = false;
+      //movingUP = false;
+    }else if (maxRect.y >= 50 && maxRect.y < 150){
       rotateDOWN = false;
       rotateUP = false;
+      //movingUP = false;
     }
 
-
-
-    //console.log(maxRect.x, maxRect.y);
-    // maxrect.x gaat van 0 tot 300 in spiegelbeeld
-    // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
-    // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
-
-
-    if (maxRect.x < 70) {
-      movingRIGHT = true;
-      movingLEFT = false;
-    }else if (maxRect.x >= 230) {
-      movingLEFT = true;
-      movingRIGHT = false;
-    }else if (maxRect.x >= 70 && maxRect.x < 230){
-      movingLEFT = false;
-      movingRIGHT = false;
-    }
-
-    // maxrect.x gaat van 0 tot 300 in spiegelbeeld
-    // -> van 0 tot 150 naar links (spiegelbeeld = rechts)
-    // -> van 150 tot 300 naar rechts (spiegelbeeld = links)
-
-    if (maxRect.y < 30) {
-      movingUP = true;
-      movingDOWN = false;
-    }else if (maxRect.y >= 170) {
-      movingDOWN = true;
-      movingUP = false;
-    }else if (maxRect.y >=30 && maxRect.y < 170){
-      movingDOWN = false;
-      movingUP = false;
-    }
-
-    //checks voor rotatie bij bewegingen - left right
-
-    if(maxRect.y < 30){
+    /*if(maxRect.y < 40){
       if (maxRect.x < 70) {
         rotateRIGHT = true;
       }else {
@@ -315,7 +327,7 @@ const onColorMove = (event) => {
       } else {
         rotateLEFT = false;
       }
-    } else if(maxRect.y >= 30 && maxRect.y < 170){
+    } else if(maxRect.y >= 40 && maxRect.y < 170){
       if (maxRect.x < 70) {
         rotateRIGHT = true;
       }else {
@@ -327,7 +339,7 @@ const onColorMove = (event) => {
       } else {
         rotateLEFT = false;
       }
-    }
+    }*/
 
 
   }
@@ -336,47 +348,25 @@ const onColorMove = (event) => {
 
 
 
-
-
-
-
-
-
-
-
 //-----------------------------------------------------------------------
 const update = () => {
 
   if (fixedArr.length !== 0) {
-    checkCollision();
+    if (movingUP || movingDOWN || movingLEFT || movingRIGHT || rotateUP || rotateDOWN || rotateLEFT || rotateRIGHT ) {
+      checkCollision();
+    }
   }
 
   var rotation_matrix = new THREE.Matrix4().identity();
 
-  if (movingUP){
-    MovingCube.translateZ(-0.9);
-  }
-  if (movingDOWN){
-    MovingCube.translateZ(0.9);
-  }
-  if (movingLEFT){
-    MovingCube.translateX(-0.9);
-  }
-  if (movingRIGHT){
-    MovingCube.translateX(0.9);
-  }
-  if (rotateUP){
-    MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.006);
-  }
-  if (rotateDOWN){
-    MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.006);
-  }
-  if (rotateLEFT){
-    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.006);
-  }
-  if (rotateRIGHT){
-    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.006);
-  }
+  if (movingUP) MovingCube.translateZ(-0.3);
+  if (movingDOWN) MovingCube.translateZ(0.9);
+  if (movingLEFT) MovingCube.translateX(-0.9);
+  if (movingRIGHT) MovingCube.translateX(0.9);
+  if (rotateUP) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.008);
+  if (rotateDOWN) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.008);
+  if (rotateLEFT) MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.008);
+  if (rotateRIGHT) MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.008);
 
 
   var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
@@ -472,16 +462,18 @@ Number.prototype.between = function(a, b) {
 
 //-----------------------------------------------------------------------
 const checkCollision = () => {
-  //console.log("in checkCollision");
-  for(let i = 0; i < fixedArr.length; i++){
-
-    if (fixedArr[i].position.x.between(MovingCube.position.x-17, MovingCube.position.x+17) &&
-        fixedArr[i].position.y.between(MovingCube.position.y-17, MovingCube.position.y+17) &&
-        fixedArr[i].position.z.between(MovingCube.position.z-17, MovingCube.position.z+17)
+  for(let i = 0; i < checkCollisionArr.length; i++){
+    //console.log(number);
+    //console.log(checkCollisionArr);
+    number++;
+    if (checkCollisionArr[i].position.x.between(MovingCube.position.x-17, MovingCube.position.x+17) &&
+        checkCollisionArr[i].position.y.between(MovingCube.position.y-17, MovingCube.position.y+17) &&
+        checkCollisionArr[i].position.z.between(MovingCube.position.z-17, MovingCube.position.z+17)
       ) {
-      //console.log(fixedArr[i]);
+      //console.log(checkCollisionArr[i]);
 
-      scene.add(fixedArr[i].renderSucceed());
+      scene.add(checkCollisionArr[i].renderSucceed());
+      checkCollisionArr.splice(i, 1);
     }
   }
 };
@@ -500,7 +492,7 @@ $.getJSON( 'api/level')
   .done(function( data ) {
     console.log('level:', data.level);
     levelInput = data.level;
-    controlChoice = 'keyboard';
+    controlChoice = 'webcam';
 
     init();
 
