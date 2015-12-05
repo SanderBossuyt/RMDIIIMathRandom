@@ -86,8 +86,8 @@ const init = () => {
   loader.load(
    'assets/final.js',
     function(geometry, materials){
-       var material = new THREE.MeshFaceMaterial( materials );
-      MovingCube = new THREE.Mesh( geometry, material );
+       var materialsss = new THREE.MeshFaceMaterial( materials );
+      MovingCube = new THREE.Mesh( geometry, materialsss );
       MovingCube.position.set(0, 25.1, 0);
       MovingCube.castShadow = true;
       MovingCube.receiveShadow = true;
@@ -202,7 +202,33 @@ const makeScene = () => {
   ground.receiveShadow = true;*/
 
 
+  var particle, e;
+
+  // we're gonna move from z position -1000 (far away)
+  // to 1000 (where the camera is) and add a random particle at every pos.
+  for ( var zpos= -3000; zpos < 3000; zpos+=7 ) {
+
+    particle = new THREE.Particle(e);
+
+    // give it a random x and y position between -500 and 500
+    particle.position.x = Math.random() * 6000 - 3000;
+    particle.position.y = Math.random() * 6000 - 3000;
+
+    // set its z position
+    particle.position.z = zpos;
+
+    // scale it up a bit
+    particle.scale.x = particle.scale.y = 2.1;
+
+    // add it to the scene
+    scene.add( particle );
+
+
+  }
+
+
 }
+
 
 
 //-----------------------------------------------------------------------
@@ -219,7 +245,7 @@ const createFixed = (setting, fig) => {
     };
 
     let torus = new Torus(position, setting.type);
-
+    console.log(torus);
     scene.add(torus.render());
     collidableMeshList.push(torus);
     fixedArr.push(torus);
@@ -492,7 +518,7 @@ $.getJSON( 'api/level')
   .done(function( data ) {
     console.log('level:', data.level);
     levelInput = data.level;
-    controlChoice = 'webcam';
+    controlChoice = 'keyboard';
 
     init();
 

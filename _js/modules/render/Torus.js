@@ -24,8 +24,9 @@ export default class Torus extends EventEmitter {
 
     //let range = 200;
 
-    let geometry = new THREE.TorusGeometry( 10, 3, 7, 7 );
-    let material = new THREE.MeshBasicMaterial( { color: color, shading: THREE.SmoothShading, overdraw: 0.5 } );
+
+    let geometry = new THREE.TorusGeometry( 10, 3, 22, 11 );
+    let material = new THREE.MeshBasicMaterial( { color: color, overdraw: 0.1 } );
 
     let shape = new THREE.Mesh(geometry, material);
     this.shape = shape;
@@ -47,8 +48,8 @@ export default class Torus extends EventEmitter {
 
     //let range = 200;
 
-    let geometry = new THREE.TorusGeometry( 13, 5, 7, 7 );
-    let material = new THREE.MeshBasicMaterial( { color: '#232323', shading: THREE.SmoothShading, overdraw: 0.5 } );
+    let geometry = new THREE.TorusGeometry( 11, 4, 22, 11 );
+    let material = new THREE.MeshBasicMaterial( { color: '#D74C4F', shading: THREE.SmoothShading, overdraw: 0.5 } );
 
     let shape = new THREE.Mesh(geometry, material);
     this.shape = shape;
