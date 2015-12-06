@@ -43,6 +43,7 @@
     "lodash": "^3.10.1",
     "three-orbit-controls": "^72.0.0",
     "tracking": "^1.1.1",
+    "tween.js": "^16.3.1",
     "vision": "^3.0.0",
     "yar": "^4.2.0"
   },

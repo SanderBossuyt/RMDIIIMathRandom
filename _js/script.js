@@ -5,6 +5,7 @@ import helloworldTpl from '../_hbs/helloworld';
 import Torus from './modules/render/Torus';
 let Tracking = require('tracking/build/tracking.js');
 let OrbitControls = require('three-orbit-controls')(THREE);
+let TWEEN = require('tween.js');
 
 let video = document.getElementById('video');
 let canvas = document.getElementById('canvas');
@@ -219,6 +220,7 @@ const animateKeyboard = () => {
 const renderKeyboard = () => {
   update();
   updateForKeyboard();
+  TWEEN.update();
   renderer.render(scene, camera);
 };
 
@@ -232,6 +234,7 @@ const animateWebcam = () => {
 //-----------------------------------------------------------------------
 const renderWebcam = () => {
   update();
+  TWEEN.update();
   renderer.render(scene, camera);
 };
 
@@ -324,6 +327,36 @@ const update = () => {
   camera.position.y = cameraOffset.y;
   camera.position.z = cameraOffset.z;
   camera.lookAt( MovingCube.position );
+  } else {
+    //console.log("tween");
+    /*var tween = new TWEEN.Tween(camera.position).to({
+        x: 90,
+        y: 95,
+        z: 560
+      }).easing(TWEEN.Easing.Quadratic.InOut).onUpdate(function() {
+          camera.lookAt(fixedArr[1].position);
+      }).onComplete(function() {
+          camera.lookAt(fixedArr[1].position);
+      }).start();*/
+
+      var tween = new TWEEN.Tween(camera.position).to({
+          x: 30,
+          y: 80,
+          z: 380
+      }, 140).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
+          camera.lookAt(fixedArr[0].position);
+      }).onComplete(function () {
+          camera.lookAt(fixedArr[0].position);
+      }).start();
+
+      var tween = new TWEEN.Tween(MovingCube.position).to({
+          x: fixedArr[0].position.x,
+          y: fixedArr[0].position.y,
+          z: fixedArr[0].position.z
+      }, 140).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
+      }).onComplete(function () {
+          camera.lookAt(fixedArr[0].position);
+      }).start();
   }
 
 
@@ -410,11 +443,13 @@ const checkCollision = () => {
     }
     if (checkCollisionArr.length == 0) {
       console.log("--- DONE ---");
-      camera.position.x = 37;
+      /*camera.position.x = 37;
       camera.position.y = 80;
       camera.position.z = 300;
-      camera.lookAt( fixedArr[1].position );
+      camera.lookAt( fixedArr[1].position );*/
 
+
+      //console.log(tween);
     }
   }
 };
