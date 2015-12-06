@@ -69,6 +69,7 @@ const init = () => {
 
   for(let i = 0; i < settings.length; i++){
     if(settings[i].type === level){
+      console.log(settings[i]);
       levelArr.push(settings[i]);
     }
   }
@@ -204,7 +205,7 @@ const makeScene = () => {
 
 //-----------------------------------------------------------------------
 const createFixed = (setting, fig) => {
-
+  console.log(setting, fig);
   let {amount} = setting;
 
   for(let i = 0; i < amount; i++){
@@ -478,7 +479,7 @@ const checkCollision = () => {
 //-----------------------------------------------------------------------
 const infoInteraction = () => {
   $('.infobtn').on('click', function(e){
-    console.log('clicked');
+    //console.log('clicked');
     $('.info').toggleClass( 'hidden' );
   });
 };
@@ -487,7 +488,7 @@ const infoInteraction = () => {
 
 $.getJSON( 'api/level')
   .done(function( data ) {
-    console.log('level:', data.level, '  playmode:', data.playmode);
+    //console.log('level:', data.level, '  playmode:', data.playmode);
     levelInput = data.level;
     controlChoice = data.playmode;
 
@@ -496,7 +497,7 @@ $.getJSON( 'api/level')
   })
   .fail(function( jqxhr, textStatus, error ) {
     var err = textStatus + ', ' + error;
-    console.log( 'Request Failed: ' + err );
+    //console.log( 'Request Failed: ' + err );
   });
 
 
