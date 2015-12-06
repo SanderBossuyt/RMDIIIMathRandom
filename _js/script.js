@@ -69,7 +69,6 @@ const init = () => {
 
   for(let i = 0; i < settings.length; i++){
     if(settings[i].type === level){
-      console.log(settings[i]);
       levelArr.push(settings[i]);
     }
   }
@@ -92,7 +91,6 @@ const init = () => {
       MovingCube.position.set(0, 25.1, 0);
       MovingCube.castShadow = true;
       MovingCube.receiveShadow = true;
-      //console.log("t: ",MovingCube);
       scene.add( MovingCube);
     }
   );
@@ -119,17 +117,8 @@ const init = () => {
    'assets/plane.js',
     function(geometry, materials){
       let materialss = new THREE.MeshBasicMaterial( { color: '#8BAABE' } );
-       //var material = new THREE.MeshFaceMaterial( materials );
-      /*MovingCube = new THREE.Mesh( geometry, material );
-      MovingCube.position.set(0, 25.1, 0);
-      MovingCube.castShadow = true;
-      MovingCube.receiveShadow = true;
-      //console.log("t: ",MovingCube);
-      scene.add( MovingCube);*/
 
   var ground = new THREE.Mesh( geometry, materialss );
-  //ground.rotation.x = -Math.PI/2;
-  //ground.position.y = -33;
   ground.position.set(0, -123, 0);
   scene.add( ground );
   ground.receiveShadow = true;
@@ -159,20 +148,16 @@ const init = () => {
 //--------------------------------------------------------------------------
 
 const makeScene = () => {
-  // SKYBOX/FOG
   var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
   var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: '#000000', side: THREE.BackSide } );
   var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
   scene.add(skyBox);
   scene.fog = new THREE.FogExp2( '#0d305b', 0.00019 );
-  // LIGHTS
   var hemiLight = new THREE.HemisphereLight( '#4c6286', '#4c6286', 0.6 );
   hemiLight.color.setHSL( 0.6, 1, 0.6 );
   hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
   hemiLight.position.set( 0, 500, 0 );
   scene.add( hemiLight );
-
-
   var dirLight = new THREE.DirectionalLight( '#4c6286', 1 );
   dirLight.color.setHSL( 0.1, 1, 0.75 );
   dirLight.position.set( -1, 1.5, 1 );
@@ -181,7 +166,6 @@ const makeScene = () => {
   dirLight.castShadow = true;
   dirLight.shadowMapWidth = 2048;
   dirLight.shadowMapHeight = 2048;
-
   var d = 90;
   dirLight.shadowCameraLeft = -d;
   dirLight.shadowCameraRight = d;
@@ -189,7 +173,6 @@ const makeScene = () => {
   dirLight.shadowCameraBottom = -d;
   dirLight.shadowCameraFar = 3500;
   dirLight.shadowBias = -0.0001;
-
   var particle, e;
   for ( var zpos = -1000; zpos < 800; zpos+=2 ) {
     particle = new THREE.Particle(e);
@@ -205,7 +188,7 @@ const makeScene = () => {
 
 //-----------------------------------------------------------------------
 const createFixed = (setting, fig) => {
-  console.log(setting, fig);
+  //console.log(setting, fig);
   let {amount} = setting;
 
   for(let i = 0; i < amount; i++){
@@ -217,7 +200,6 @@ const createFixed = (setting, fig) => {
     };
 
     let torus = new Torus(position, setting.type);
-    console.log(torus);
     scene.add(torus.render());
     collidableMeshList.push(torus);
     fixedArr.push(torus);
@@ -288,57 +270,24 @@ const onColorMove = (event) => {
     if (maxRect.x < 90) {
       rotateRIGHT = true;
       rotateLEFT = false;
-      //movingUP = false;
     }else if (maxRect.x >= 200) {
       rotateLEFT = true;
       rotateRIGHT = false;
-      //movingUP = false;
     }else if (maxRect.x >= 90 && maxRect.x < 200){
       rotateLEFT = false;
       rotateRIGHT = false;
-      //movingUP = false;
     }
 
     if (maxRect.y < 50) {
       rotateUP = true;
       rotateDOWN = false;
-      //movingUP = false;
     }else if (maxRect.y >= 150) {
       rotateDOWN = true;
       rotateUP = false;
-      //movingUP = false;
     }else if (maxRect.y >= 50 && maxRect.y < 150){
       rotateDOWN = false;
       rotateUP = false;
-      //movingUP = false;
     }
-
-    /*if(maxRect.y < 40){
-      if (maxRect.x < 70) {
-        rotateRIGHT = true;
-      }else {
-        rotateRIGHT = false;
-      }
-
-      if(maxRect.x >=230){
-        rotateLEFT = true;
-      } else {
-        rotateLEFT = false;
-      }
-    } else if(maxRect.y >= 40 && maxRect.y < 170){
-      if (maxRect.x < 70) {
-        rotateRIGHT = true;
-      }else {
-        rotateRIGHT = false;
-      }
-
-      if(maxRect.x >=230){
-        rotateLEFT = true;
-      } else {
-        rotateLEFT = false;
-      }
-    }*/
-
 
   }
 
@@ -348,11 +297,13 @@ const onColorMove = (event) => {
 
 //-----------------------------------------------------------------------
 const update = () => {
+  //console.log(MovingCube.position);
 
   if (fixedArr.length !== 0) {
     if (movingUP || movingDOWN || movingLEFT || movingRIGHT || rotateUP || rotateDOWN || rotateLEFT || rotateRIGHT ) {
       checkCollision();
     }
+
   }
 
   var rotation_matrix = new THREE.Matrix4().identity();
@@ -366,13 +317,15 @@ const update = () => {
   if (rotateLEFT) MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.008);
   if (rotateRIGHT) MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.008);
 
-
+  if (checkCollisionArr.length != 0) {
   var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
   var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
   camera.position.x = cameraOffset.x;
   camera.position.y = cameraOffset.y;
   camera.position.z = cameraOffset.z;
   camera.lookAt( MovingCube.position );
+  }
+
 
 
 };
@@ -383,30 +336,22 @@ const updateForKeyboard = () => {
 document.addEventListener('keyup', function(event){
 
     if(event.keyCode === 90){ //W UP
-     //MovingCube.translateZ(-moveDistance);
       movingUP = false;
     }else if(event.keyCode === 87){ // DOWN
-      //MovingCube.translateZ(moveDistance);
       movingDOWN = false;
     }else if(event.keyCode === 81){ //Q LEFT
-      //MovingCube.translateX(-moveDistance);
       movingLEFT = false;
     }else if(event.keyCode === 68){ //D RIGHT
-      //MovingCube.translateX(moveDistance);
       movingRIGHT = false;
     }
 
     if(event.keyCode === 38){ // UP
-      //MovingCube.rotateOnAxis( new THREE.Vector3(1,0,0), rotateAngle);
       rotateUP = false;
     }else if(event.keyCode === 40){ // DOWN
-      //MovingCube.rotateOnAxis( new THREE.Vector3(1,0,0), -rotateAngle);
       rotateDOWN = false;
     }else if(event.keyCode === 37){ // LEFT
-      //MovingCube.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
       rotateLEFT = false;
     }else if(event.keyCode === 39){ // RIGHT
-      //MovingCube.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
       rotateRIGHT = false;
     }
 
@@ -414,30 +359,22 @@ document.addEventListener('keyup', function(event){
 
   document.addEventListener('keydown', function(event){
     if(event.keyCode === 90){ //W UP
-     //MovingCube.translateZ(-moveDistance);
       movingUP = true;
     }else if(event.keyCode === 87){ // DOWN
-      //MovingCube.translateZ(moveDistance);
       movingDOWN = true;
     }else if(event.keyCode === 81){ //Q LEFT
-      //MovingCube.translateX(-moveDistance);
       movingLEFT = true;
     }else if(event.keyCode === 68){ //D RIGHT
-      //MovingCube.translateX(moveDistance);
       movingRIGHT = true;
     }
 
     if(event.keyCode === 38){ // UP
-      //MovingCube.rotateOnAxis( new THREE.Vector3(1,0,0), rotateAngle);
       rotateUP = true;
     }else if(event.keyCode === 40){ // DOWN
-      //MovingCube.rotateOnAxis( new THREE.Vector3(1,0,0), -rotateAngle);
       rotateDOWN = true;
     }else if(event.keyCode === 37){ // LEFT
-      //MovingCube.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
       rotateLEFT = true;
     }else if(event.keyCode === 39){ // RIGHT
-      //MovingCube.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
       rotateRIGHT = true;
     }
 
@@ -461,17 +398,23 @@ Number.prototype.between = function(a, b) {
 //-----------------------------------------------------------------------
 const checkCollision = () => {
   for(let i = 0; i < checkCollisionArr.length; i++){
-    //console.log(number);
-    //console.log(checkCollisionArr);
+
     number++;
     if (checkCollisionArr[i].position.x.between(MovingCube.position.x-17, MovingCube.position.x+17) &&
         checkCollisionArr[i].position.y.between(MovingCube.position.y-17, MovingCube.position.y+17) &&
         checkCollisionArr[i].position.z.between(MovingCube.position.z-17, MovingCube.position.z+17)
       ) {
-      //console.log(checkCollisionArr[i]);
 
       scene.add(checkCollisionArr[i].renderSucceed());
       checkCollisionArr.splice(i, 1);
+    }
+    if (checkCollisionArr.length == 0) {
+      console.log("--- DONE ---");
+      camera.position.x = 37;
+      camera.position.y = 80;
+      camera.position.z = 300;
+      camera.lookAt( fixedArr[1].position );
+
     }
   }
 };
@@ -479,7 +422,6 @@ const checkCollision = () => {
 //-----------------------------------------------------------------------
 const infoInteraction = () => {
   $('.infobtn').on('click', function(e){
-    //console.log('clicked');
     $('.info').toggleClass( 'hidden' );
   });
 };
@@ -488,7 +430,6 @@ const infoInteraction = () => {
 
 $.getJSON( 'api/level')
   .done(function( data ) {
-    //console.log('level:', data.level, '  playmode:', data.playmode);
     levelInput = data.level;
     controlChoice = data.playmode;
 
@@ -497,7 +438,6 @@ $.getJSON( 'api/level')
   })
   .fail(function( jqxhr, textStatus, error ) {
     var err = textStatus + ', ' + error;
-    //console.log( 'Request Failed: ' + err );
   });
 
 
