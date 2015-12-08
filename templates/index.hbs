@@ -4,6 +4,10 @@
 <section class="headsection">
     <div class="logo"><span>Connect the dots</span></div>
 
+  {{#if error}}
+    <span class="error">{{error}}</span>
+  {{/if}}
+
   <p>Use a magenta colored object to steer the rocket.
   Try steering through the circles and wait for the end.</p>
 

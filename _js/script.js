@@ -11,7 +11,11 @@ let video = document.getElementById('video');
 let canvas = document.getElementById('canvas');
 let context = canvas.getContext('2d');
 
-let scene, camera, renderer, MovingCube;
+let scene, camera, renderer, MovingCube, cloud;
+let scalenr = 0.5;
+let random;
+let maximumCloudSize = 1.4;
+let minimumCloudSize = 0.7
 
 let levelInput;
 let controlChoice;
@@ -37,6 +41,7 @@ let checkCollisionArr = [];
 let levelArr = [];
 let collidableMeshList = [];
 let arrBufferSounds = [];
+let scale;
 
 let number = 1;
 
@@ -70,7 +75,7 @@ const init = () => {
   camera.position.set(0, 150, 400);
   camera.lookAt(scene.position);
 
-  renderer = new THREE.WebGLRenderer();
+  renderer = new THREE.WebGLRenderer({antialias: true});
 
   renderer.setSize(
     window.innerWidth,
@@ -86,8 +91,8 @@ const init = () => {
   /*new OrbitControls(camera);*/
   document.querySelector('main').appendChild(renderer.domElement);
 
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMapEnabled = true;
+  renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
   makeScene();
 
@@ -144,10 +149,10 @@ const init = () => {
   loaderPlane.load(
    'assets/plane.js',
     function(geometry, materials){
-      let materialss = new THREE.MeshBasicMaterial( { color: '#8BAABE' } );
-      var materialsss = new THREE.MeshFaceMaterial( materials );
+      let planematerials = new THREE.MeshPhongMaterial( { color: '#8BAABE', shading: THREE.SmoothShading } );
+      //var materialsss = new THREE.MeshFaceMaterial( materials );
 
-  var ground = new THREE.Mesh( geometry, materialsss );
+  let ground = new THREE.Mesh( geometry, planematerials );
   ground.position.set(0, -123, 0);
   scene.add( ground );
   ground.receiveShadow = true;
@@ -175,6 +180,8 @@ const init = () => {
     //e.preventDefault();
     //redirect('')
   });
+
+  drawPath();
 
 
 };
@@ -243,6 +250,53 @@ const createFixed = (setting, fig) => {
 
 };
 
+const scaleCloud = () => {
+  if(cloud && scale){
+
+    scalenr+= 0.1;
+
+    cloud.scale.x = scalenr;
+    cloud.scale.y = scalenr;
+    cloud.scale.z = scalenr;
+
+
+    if(scalenr >= random){
+        scalenr = 0;
+        scale = false;
+    }
+
+
+  }
+}
+
+const drawPath = () => {
+
+
+    setTimeout(function () {
+
+
+      let geometry = new THREE.IcosahedronGeometry(3, 0);
+
+      var material = new THREE.MeshPhongMaterial( {color: '#E7FFFD', shading: THREE.FlatShading} );
+      cloud = new THREE.Mesh( geometry, material );
+      cloud.castShadow = true;
+      cloud.receiveShadow = true;
+      cloud.position.set(MovingCube.position.x + 4, MovingCube.position.y, MovingCube.position.z + 3);
+
+      scale = true;
+      random = Math.random() * (maximumCloudSize - minimumCloudSize) + minimumCloudSize;
+
+      scene.add( cloud );
+
+
+        // Do Something Here
+        // Then recall the parent function to
+        // create a recursive loop.
+        drawPath();
+    }, 1000);
+}
+
+
 
 //-----------------------------------------------------------------------
 const animateKeyboard = () => {
@@ -252,6 +306,7 @@ const animateKeyboard = () => {
 //-----------------------------------------------------------------------
 const renderKeyboard = () => {
   update();
+  scaleCloud();
   updateForKeyboard();
   TWEEN.update();
   renderer.render(scene, camera);
@@ -267,6 +322,7 @@ const animateWebcam = () => {
 //-----------------------------------------------------------------------
 const renderWebcam = () => {
   update();
+  scaleCloud();
   TWEEN.update();
   renderer.render(scene, camera);
 };
@@ -488,7 +544,9 @@ const checkCollision = () => {
         checkCollisionArr[i].position.z.between(MovingCube.position.z-17, MovingCube.position.z+17)
       ) {
       player.playSoundtrack(arrBufferSounds[1], SoundUtil.getPanning(bounds, flyingval));
-      scene.add(checkCollisionArr[i].renderSucceed());
+      checkCollisionArr[i].shape.material.color.setHex(0xff0000);
+
+      //scene.add(checkCollisionArr[i].renderSucceed());
       checkCollisionArr.splice(i, 1);
     }
     if (checkCollisionArr.length == 0) {

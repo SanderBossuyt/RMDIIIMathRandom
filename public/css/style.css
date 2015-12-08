@@ -329,3 +329,7 @@ input[type="radio"]:checked + label {
 .backtohome:hover {
   color: #8BAABE;
 }
+
+.error {
+  color: #D74D4C;
+}
