@@ -311,3 +311,21 @@ input[type="radio"]:checked + label {
   position: absolute;
   z-index: 102;
 }
+
+.backtohome {
+  font-size: 1em;
+  font-family: 'outagecut', Arial, sans-serif;
+  color: #f9f9f9;
+  border-radius: 6px;
+  text-align: center;
+  width: 220px;
+  height: 80px;
+  background-color: #232323;
+  position: absolute;
+  right: 90px;
+  bottom: 90px;
+}
+
+.backtohome:hover {
+  color: #8BAABE;
+}

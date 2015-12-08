@@ -1,6 +1,6 @@
 'use strict';
 
-import {settings, figure} from './data/';
+import {settings, figure, sets} from './data/';
 import helloworldTpl from '../_hbs/helloworld';
 import Torus from './modules/render/Torus';
 let Tracking = require('tracking/build/tracking.js');
@@ -15,6 +15,13 @@ let scene, camera, renderer, MovingCube;
 
 let levelInput;
 let controlChoice;
+let bam;
+let ctx;
+let player;
+let bounds;
+let flyingval = 700;
+import {SoundUtil} from './modules/util/';
+import {Player, BufferLoader} from './modules/sound/';
 
 let movingUP = false;
 let movingDOWN = false;
@@ -29,16 +36,30 @@ let fixedArr = [];
 let checkCollisionArr = [];
 let levelArr = [];
 let collidableMeshList = [];
+let arrBufferSounds = [];
 
 let number = 1;
 
-
 const init = () => {
 
-  //when clicking the info button, show/hide the controls
   infoInteraction();
 
   scene = new THREE.Scene();
+
+  ctx = new AudioContext();
+  player = new Player(ctx);
+
+  window.AudioContext =
+    window.AudioContext ||
+    window.webkitAudioContext;
+
+  bounds = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    border: 80
+  };
+
+  bam = bounds.width/2;
 
   let level = levelInput;
 
@@ -55,6 +76,12 @@ const init = () => {
     window.innerWidth,
     window.innerHeight
   );
+
+  console.log(sets[0]);
+  let loaderMusic = new BufferLoader(ctx);
+    loaderMusic.load(sets['audio'])
+      .then( data => play(data) )
+
 
   /*new OrbitControls(camera);*/
   document.querySelector('main').appendChild(renderer.domElement);
@@ -96,7 +123,7 @@ const init = () => {
     }
   );
 
-  /*var loaderPlanet = new THREE.JSONLoader();
+  var loaderPlanet = new THREE.JSONLoader();
 
   loaderPlanet.load(
    'assets/bam.js',
@@ -110,7 +137,7 @@ const init = () => {
       //console.log("t: ",planet);
       scene.add( planet);
     }
-  );*/
+  );
 
   var loaderPlane = new THREE.JSONLoader();
 
@@ -118,8 +145,9 @@ const init = () => {
    'assets/plane.js',
     function(geometry, materials){
       let materialss = new THREE.MeshBasicMaterial( { color: '#8BAABE' } );
+      var materialsss = new THREE.MeshFaceMaterial( materials );
 
-  var ground = new THREE.Mesh( geometry, materialss );
+  var ground = new THREE.Mesh( geometry, materialsss );
   ground.position.set(0, -123, 0);
   scene.add( ground );
   ground.receiveShadow = true;
@@ -142,6 +170,11 @@ const init = () => {
     colors.on('track', onColorMove);
     animateWebcam();
   }
+
+  $('.backtohome').on('click', function(e){
+    //e.preventDefault();
+    //redirect('')
+  });
 
 
 };
@@ -173,7 +206,7 @@ const makeScene = () => {
   dirLight.shadowCameraTop = d;
   dirLight.shadowCameraBottom = -d;
   dirLight.shadowCameraFar = 3500;
-  dirLight.shadowBias = -0.0001;
+  dirLight.shadowBias = -0.001;
   var particle, e;
   for ( var zpos = -1000; zpos < 800; zpos+=2 ) {
     particle = new THREE.Particle(e);
@@ -317,8 +350,16 @@ const update = () => {
   if (movingRIGHT) MovingCube.translateX(0.9);
   if (rotateUP) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.008);
   if (rotateDOWN) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.008);
-  if (rotateLEFT) MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.008);
-  if (rotateRIGHT) MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.008);
+  if (rotateLEFT) {
+    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.008);
+    bam = (window.innerWidth/7);
+  }else if (rotateRIGHT) {
+     MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.008);
+     console.log("setten pos");
+     bam = window.innerWidth-(window.innerWidth/7);
+  } else {
+    bam = window.innerWidth/2;
+  }
 
   if (checkCollisionArr.length != 0) {
   var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
@@ -343,21 +384,30 @@ const update = () => {
           x: 30,
           y: 80,
           z: 380
-      }, 140).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
+      }, 10).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
           camera.lookAt(fixedArr[0].position);
       }).onComplete(function () {
-          camera.lookAt(fixedArr[0].position);
+        console.log("completetween1");
+        scene.remove(MovingCube);
+        $('.backtohome').removeClass('hidden');
+          //camera.lookAt(fixedArr[0].position);
+
       }).start();
 
       var tween = new TWEEN.Tween(MovingCube.position).to({
           x: fixedArr[0].position.x,
           y: fixedArr[0].position.y,
           z: fixedArr[0].position.z
-      }, 140).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
+      }, 10).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
       }).onComplete(function () {
-          camera.lookAt(fixedArr[0].position);
+        console.log("completetween2");
+          //camera.lookAt(fixedArr[0].position);
+
       }).start();
   }
+
+
+  player.panner.setPosition(SoundUtil.getPanning(bounds, bam), 0, 1 - Math.abs(SoundUtil.getPanning(bounds, bam)));
 
 
 
@@ -437,7 +487,7 @@ const checkCollision = () => {
         checkCollisionArr[i].position.y.between(MovingCube.position.y-17, MovingCube.position.y+17) &&
         checkCollisionArr[i].position.z.between(MovingCube.position.z-17, MovingCube.position.z+17)
       ) {
-
+      player.playSoundtrack(arrBufferSounds[1], SoundUtil.getPanning(bounds, flyingval));
       scene.add(checkCollisionArr[i].renderSucceed());
       checkCollisionArr.splice(i, 1);
     }
@@ -453,6 +503,17 @@ const checkCollision = () => {
     }
   }
 };
+
+//-----------------------------------------------------------------------
+
+const play = (data=[]) => {
+  arrBufferSounds = data;
+  console.log("data = " , data);
+  player.playSoundtrack(data[0], SoundUtil.getPanning(bounds, flyingval));
+  data.forEach(function(s) {
+    arrBufferSounds.push(s);
+  });
+}
 
 //-----------------------------------------------------------------------
 const infoInteraction = () => {
