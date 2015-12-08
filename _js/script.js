@@ -15,7 +15,9 @@ let scene, camera, renderer, MovingCube, cloud;
 let scalenr = 0.5;
 let random;
 let maximumCloudSize = 1.4;
-let minimumCloudSize = 0.7
+let minimumCloudSize = 0.7;
+let start = 0;
+let y, sinus;
 
 let levelInput;
 let controlChoice;
@@ -41,6 +43,7 @@ let checkCollisionArr = [];
 let levelArr = [];
 let collidableMeshList = [];
 let arrBufferSounds = [];
+let FigureYpos = [];
 let scale;
 
 let number = 1;
@@ -128,7 +131,7 @@ const init = () => {
     }
   );
 
-  var loaderPlanet = new THREE.JSONLoader();
+  /*var loaderPlanet = new THREE.JSONLoader();
 
   loaderPlanet.load(
    'assets/bam.js',
@@ -142,7 +145,7 @@ const init = () => {
       //console.log("t: ",planet);
       scene.add( planet);
     }
-  );
+  );*/
 
   var loaderPlane = new THREE.JSONLoader();
 
@@ -241,10 +244,13 @@ const createFixed = (setting, fig) => {
     };
 
     let torus = new Torus(position, setting.type);
-    scene.add(torus.render());
+    scene.add(torus.render(0));
     collidableMeshList.push(torus);
     fixedArr.push(torus);
     checkCollisionArr.push(torus);
+
+    FigureYpos.push(torus.position.y);
+
 
   }
 
@@ -265,9 +271,10 @@ const scaleCloud = () => {
         scale = false;
     }
 
-
   }
 }
+
+
 
 const drawPath = () => {
 
@@ -307,10 +314,31 @@ const animateKeyboard = () => {
 const renderKeyboard = () => {
   update();
   scaleCloud();
+
+  moveTorus();
+
   updateForKeyboard();
   TWEEN.update();
   renderer.render(scene, camera);
 };
+
+const moveTorus = () => {
+// 100 iterations
+
+//let influence = Math.random() * (2.5 - 1) + 1;
+
+
+sinus = Math.sin( start ) + 10
+start += 0.05;
+
+for(let i = 0; i < checkCollisionArr.length; i++){
+  let nr = i * 0.5 + 1;
+
+  checkCollisionArr[i].shape.position.setY(FigureYpos[i] + sinus * nr);
+
+}
+}
+
 
 
 
@@ -543,6 +571,7 @@ const checkCollision = () => {
         checkCollisionArr[i].position.y.between(MovingCube.position.y-17, MovingCube.position.y+17) &&
         checkCollisionArr[i].position.z.between(MovingCube.position.z-17, MovingCube.position.z+17)
       ) {
+      console.log("collision");
       player.playSoundtrack(arrBufferSounds[1], SoundUtil.getPanning(bounds, flyingval));
       checkCollisionArr[i].shape.material.color.setHex(0xff0000);
 
