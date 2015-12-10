@@ -21,7 +21,7 @@ let y, sinus;
 
 let levelInput;
 let controlChoice;
-let bam;
+let bam = window.innerWidth/2;
 let ctx;
 let player;
 let bounds;
@@ -85,7 +85,7 @@ const init = () => {
     window.innerHeight
   );
 
-  console.log(sets[0]);
+  //console.log(sets[0]);
   let loaderMusic = new BufferLoader(ctx);
     loaderMusic.load(sets['audio'])
       .then( data => play(data) )
@@ -331,12 +331,13 @@ const moveTorus = () => {
 sinus = Math.sin( start ) + 10
 start += 0.05;
 
-for(let i = 0; i < checkCollisionArr.length; i++){
-  let nr = i * 0.5 + 1;
+  for(let i = 0; i < fixedArr.length; i++){
+    let nr = i * 0.5 + 1;
+    //console.log("1: : :", FigureYpos[i]);
+    fixedArr[i].shape.position.y = ((FigureYpos[i] + sinus * nr));
 
-  checkCollisionArr[i].shape.position.setY(FigureYpos[i] + sinus * nr);
-
-}
+    //console.log("2 : : :", fixedArr[i].position.x, fixedArr[i].position.y, fixedArr[i].position.z);
+  }
 }
 
 
@@ -417,7 +418,6 @@ const onColorMove = (event) => {
 
 //-----------------------------------------------------------------------
 const update = () => {
-  //console.log(MovingCube.position);
 
   if (fixedArr.length !== 0) {
     if (movingUP || movingDOWN || movingLEFT || movingRIGHT || rotateUP || rotateDOWN || rotateLEFT || rotateRIGHT ) {
@@ -428,21 +428,33 @@ const update = () => {
 
   var rotation_matrix = new THREE.Matrix4().identity();
 
-  if (movingUP) MovingCube.translateZ(-0.3);
+  if (movingUP) MovingCube.translateZ(-0.8);
   if (movingDOWN) MovingCube.translateZ(0.9);
   if (movingLEFT) MovingCube.translateX(-0.9);
   if (movingRIGHT) MovingCube.translateX(0.9);
-  if (rotateUP) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.008);
-  if (rotateDOWN) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.008);
+  if (rotateUP) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.009);
+  if (rotateDOWN) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.009);
   if (rotateLEFT) {
-    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.008);
-    bam = (window.innerWidth/7);
+    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.009);
+    //bam = (window.innerWidth/4);
+    if (bam >= (window.innerWidth/4)) {
+      bam -= 4;
+    }
+
   }else if (rotateRIGHT) {
-     MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.008);
-     console.log("setten pos");
-     bam = window.innerWidth-(window.innerWidth/7);
+     MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.009);
+     //bam = window.innerWidth-(window.innerWidth/4);
+     if (bam <= window.innerWidth-(window.innerWidth/4)) {
+        bam += 4;
+     };
+
   } else {
-    bam = window.innerWidth/2;
+    //bam = window.innerWidth/2;
+    if (bam < (window.innerWidth/2-3)) {
+      bam +=7;
+    } else if (bam > (window.innerWidth/2+3)) {
+      bam -=7;
+    }
   }
 
   if (checkCollisionArr.length != 0) {
@@ -453,25 +465,15 @@ const update = () => {
   camera.position.z = cameraOffset.z;
   camera.lookAt( MovingCube.position );
   } else {
-    //console.log("tween");
-    /*var tween = new TWEEN.Tween(camera.position).to({
-        x: 90,
-        y: 95,
-        z: 560
-      }).easing(TWEEN.Easing.Quadratic.InOut).onUpdate(function() {
-          camera.lookAt(fixedArr[1].position);
-      }).onComplete(function() {
-          camera.lookAt(fixedArr[1].position);
-      }).start();*/
 
       var tween = new TWEEN.Tween(camera.position).to({
-          x: 30,
-          y: 80,
-          z: 380
+          x: 310,
+          y: 180,
+          z: 730
       }, 10).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
           camera.lookAt(fixedArr[0].position);
       }).onComplete(function () {
-        console.log("completetween1");
+        //console.log("completetween1");
         scene.remove(MovingCube);
         $('.backtohome').removeClass('hidden');
           //camera.lookAt(fixedArr[0].position);
@@ -484,16 +486,14 @@ const update = () => {
           z: fixedArr[0].position.z
       }, 10).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
       }).onComplete(function () {
-        console.log("completetween2");
+        //console.log("completetween2");
           //camera.lookAt(fixedArr[0].position);
 
       }).start();
   }
 
-
+  //console.log("pannerbam -> ", bam);
   player.panner.setPosition(SoundUtil.getPanning(bounds, bam), 0, 1 - Math.abs(SoundUtil.getPanning(bounds, bam)));
-
-
 
 };
 
@@ -565,28 +565,18 @@ Number.prototype.between = function(a, b) {
 //-----------------------------------------------------------------------
 const checkCollision = () => {
   for(let i = 0; i < checkCollisionArr.length; i++){
-
     number++;
-    if (checkCollisionArr[i].position.x.between(MovingCube.position.x-17, MovingCube.position.x+17) &&
-        checkCollisionArr[i].position.y.between(MovingCube.position.y-17, MovingCube.position.y+17) &&
-        checkCollisionArr[i].position.z.between(MovingCube.position.z-17, MovingCube.position.z+17)
+    if (checkCollisionArr[i].position.x.between(MovingCube.position.x-22, MovingCube.position.x+22) &&
+        checkCollisionArr[i].position.y.between(MovingCube.position.y-35, MovingCube.position.y+35) &&
+        checkCollisionArr[i].position.z.between(MovingCube.position.z-22, MovingCube.position.z+22)
       ) {
-      console.log("collision");
       player.playSoundtrack(arrBufferSounds[1], SoundUtil.getPanning(bounds, flyingval));
       checkCollisionArr[i].shape.material.color.setHex(0xff0000);
-
-      //scene.add(checkCollisionArr[i].renderSucceed());
       checkCollisionArr.splice(i, 1);
     }
     if (checkCollisionArr.length == 0) {
-      console.log("--- DONE ---");
-      /*camera.position.x = 37;
-      camera.position.y = 80;
-      camera.position.z = 300;
-      camera.lookAt( fixedArr[1].position );*/
+      //console.log("--- DONE ---");
 
-
-      //console.log(tween);
     }
   }
 };
@@ -595,7 +585,6 @@ const checkCollision = () => {
 
 const play = (data=[]) => {
   arrBufferSounds = data;
-  console.log("data = " , data);
   player.playSoundtrack(data[0], SoundUtil.getPanning(bounds, flyingval));
   data.forEach(function(s) {
     arrBufferSounds.push(s);
@@ -615,9 +604,7 @@ $.getJSON( 'api/level')
   .done(function( data ) {
     levelInput = data.level;
     controlChoice = data.playmode;
-
     init();
-
   })
   .fail(function( jqxhr, textStatus, error ) {
     var err = textStatus + ', ' + error;
