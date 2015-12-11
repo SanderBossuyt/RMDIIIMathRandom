@@ -4,7 +4,7 @@ import {settings, figure, sets} from './data/';
 //import helloworldTpl from '../_hbs/helloworld';
 import Torus from './modules/render/Torus';
 let Tracking = require('tracking/build/tracking.js');
-//let OrbitControls = require('three-orbit-controls')(THREE);
+let OrbitControls = require('three-orbit-controls')(THREE);
 let TWEEN = require('tween.js');
 
 //let video = document.getElementById('video');
@@ -20,7 +20,8 @@ let start = 0;
 let y, sinus;
 let musicInit = false;
 let musicSpeed = 300;
-
+let trackedColor = "none";
+let tweenbool = false;
 let levelInput;
 let controlChoice;
 let bam = window.innerWidth/2;
@@ -30,7 +31,7 @@ let bounds;
 let flyingval = 700;
 import {SoundUtil} from './modules/util/';
 import {Player, BufferLoader} from './modules/sound/';
-
+let fireOnce = false;
 let movingUP = false;
 let movingDOWN = false;
 let movingLEFT = false;
@@ -172,7 +173,10 @@ const init = () => {
   } else if (controlChoice === 'webcam') {
     $('.infokeyboard').addClass('infowebcam');
     $('.infowebcam').removeClass('infokeyboard');
-    var colors = new tracking.ColorTracker(['magenta']);
+
+
+    let colors = new tracking.ColorTracker(['magenta', 'yellow']);
+
     tracking.track('#video', colors, { camera: true });
     colors.on('track', onColorMove);
     animateWebcam();
@@ -198,6 +202,9 @@ const makeScene = () => {
   scene.add(skyBox);
   scene.fog = new THREE.FogExp2( '#0d305b', 0.00019 );
   var hemiLight = new THREE.HemisphereLight( '#4c6286', '#4c6286', 0.6 );
+//var hemiLight = new THREE.HemisphereLight( '#6b2365', '#6b2365', 0.6 );
+
+
   hemiLight.color.setHSL( 0.6, 1, 0.6 );
   hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
   hemiLight.position.set( 0, 500, 0 );
@@ -285,10 +292,22 @@ const drawPath = () => {
     let geometry = new THREE.IcosahedronGeometry(3, 0);
 
     var material = new THREE.MeshPhongMaterial( {color: '#E7FFFD', shading: THREE.FlatShading} );
+
     cloud = new THREE.Mesh( geometry, material );
     cloud.castShadow = true;
     cloud.receiveShadow = true;
     cloud.position.set(MovingCube.position.x + 4, MovingCube.position.y, MovingCube.position.z + 3);
+
+
+    if(trackedColor !== "none"){
+      if(trackedColor === "yellow"){
+        cloud.material = new THREE.MeshPhongMaterial( {color: '#f3e50b', shading: THREE.FlatShading} );
+      }
+      if(trackedColor === "magenta"){
+        cloud.material = new THREE.MeshPhongMaterial( {color: '#eb4e8d', shading: THREE.FlatShading} );
+      }
+    }
+
 
     scale = true;
     random = Math.random() * (maximumCloudSize - minimumCloudSize) + minimumCloudSize;
@@ -308,7 +327,6 @@ const drawPath = () => {
 const playMusic = () => {
   setTimeout(function () {
 
-  console.log('in playMusic');
 
 
   /*if(rotateUP && player.scale.d <= 600.50){
@@ -318,8 +336,6 @@ const playMusic = () => {
       }
     }
   }*/
-
-
 
 
     if(musicInit){
@@ -333,6 +349,7 @@ const playMusic = () => {
 //-----------------------------------------------------------------------
 const animateKeyboard = () => {
   requestAnimationFrame(() => animateKeyboard());
+  TWEEN.update();
   renderKeyboard();
 };
 //-----------------------------------------------------------------------
@@ -342,7 +359,7 @@ const renderKeyboard = () => {
   moveTorus();
 
   updateForKeyboard();
-  TWEEN.update();
+//  TWEEN.update();
   renderer.render(scene, camera);
 };
 
@@ -387,6 +404,9 @@ const onColorMove = (event) => {
     rotateRIGHT = false;
     return;
   }
+
+  trackedColor = event.data[0].color;
+
 
   var maxRect;
   var maxRectArea = 0;
@@ -441,14 +461,14 @@ const update = () => {
   if (fixedArr.length !== 0) {
     if (movingUP || movingDOWN || movingLEFT || movingRIGHT || rotateUP || rotateDOWN || rotateLEFT || rotateRIGHT ) {
       checkCollision();
-      console.log("start");
+      //console.log("start");
       if (player.gainNode.gain.value < 1) {
-          console.log('in gank schieten eh!');
+          //console.log('in gank schieten eh!');
         player.gainNode.gain.value += 0.04;
       }
     }else {
       if (player.gainNode.gain.value > 0.2) {
-        console.log('stilvallen');
+        //console.log('stilvallen');
         player.gainNode.gain.value -= 0.03;
       }
     }
@@ -518,30 +538,23 @@ const update = () => {
     camera.lookAt( MovingCube.position );
   } else {
 
-      var tween = new TWEEN.Tween(camera.position).to({
-        x: 310,
-        y: 180,
-        z: 730
-      }, 10).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
-          camera.lookAt(fixedArr[0].position);
-      }).onComplete(function () {
-        //console.log("completetween1");
-        scene.remove(MovingCube);
-        $('.backtohome').removeClass('hidden');
-          //camera.lookAt(fixedArr[0].position);
+    if(!tweenbool){
 
-      }).start();
+      test();
 
-      var tween = new TWEEN.Tween(MovingCube.position).to({
+     /* var tween = new TWEEN.Tween(MovingCube.position).to({
         x: fixedArr[0].position.x,
         y: fixedArr[0].position.y,
         z: fixedArr[0].position.z
-      }, 10).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
-      }).onComplete(function () {
-        //console.log("completetween2");
-          //camera.lookAt(fixedArr[0].position);
 
-      }).start();
+      }, 10).easing(TWEEN.Easing.Linear.None).onComplete(test).start();*/
+
+
+      //tween.onComplete(tweenplay);
+    }
+
+          //fireOnce = true;
+
   }
 
   //console.log("pannerbam -> ", bam);
@@ -549,6 +562,57 @@ const update = () => {
 
 
 };
+
+const test = () => {
+
+console.log("loop or no");
+
+       let t0 = new TWEEN.Tween(camera.position)
+            .to({ x: 310,
+                  y: 180,
+                  z: 730
+            }, 2000)
+            .easing(TWEEN.Easing.Linear.None)
+            .onUpdate(function() {
+              camera.lookAt(fixedArr[0].position);
+              scene.remove(MovingCube);
+
+            })
+            .onComplete(function() {
+              $('.backtohome').removeClass('hidden');
+
+              new OrbitControls(camera);
+
+            });
+
+          t0.start();
+
+
+
+          let t1 = new TWEEN.Tween(MovingCube.position)
+            .to({ x: fixedArr[0].position.x,
+                  y: fixedArr[0].position.y,
+                  z: fixedArr[0].position.z
+            }, 2000)
+            .delay(1000)
+            .easing(TWEEN.Easing.Linear.None);
+
+
+
+          t1.start();
+
+
+
+            tweenbool = true;
+
+
+        //console.log("completetween2");
+          //camera.lookAt(fixedArr[0].position);
+
+
+};
+
+
 
 
 const updateForKeyboard = () => {
