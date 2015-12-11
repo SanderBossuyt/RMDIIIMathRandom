@@ -1,15 +1,15 @@
 'use strict';
 
 import {settings, figure, sets} from './data/';
-import helloworldTpl from '../_hbs/helloworld';
+//import helloworldTpl from '../_hbs/helloworld';
 import Torus from './modules/render/Torus';
 let Tracking = require('tracking/build/tracking.js');
-let OrbitControls = require('three-orbit-controls')(THREE);
+//let OrbitControls = require('three-orbit-controls')(THREE);
 let TWEEN = require('tween.js');
 
-let video = document.getElementById('video');
+//let video = document.getElementById('video');
 let canvas = document.getElementById('canvas');
-let context = canvas.getContext('2d');
+//let context = canvas.getContext('2d');
 
 let scene, camera, renderer, MovingCube, cloud;
 let scalenr = 0.5;
@@ -85,13 +85,10 @@ const init = () => {
     window.innerHeight
   );
 
-  //console.log(sets[0]);
   let loaderMusic = new BufferLoader(ctx);
-    loaderMusic.load(sets['audio'])
-      .then( data => play(data) )
+  loaderMusic.load(sets['audio'])
+    .then( data => play(data) );
 
-
-  /*new OrbitControls(camera);*/
   document.querySelector('main').appendChild(renderer.domElement);
 
   renderer.shadowMapEnabled = true;
@@ -122,7 +119,7 @@ const init = () => {
   loader.load(
    'assets/final.js',
     function(geometry, materials){
-       var materialsss = new THREE.MeshFaceMaterial( materials );
+      var materialsss = new THREE.MeshFaceMaterial( materials );
       MovingCube = new THREE.Mesh( geometry, materialsss );
       MovingCube.position.set(0, 25.1, 0);
       MovingCube.castShadow = true;
@@ -155,22 +152,22 @@ const init = () => {
       let planematerials = new THREE.MeshPhongMaterial( { color: '#8BAABE', shading: THREE.SmoothShading } );
       //var materialsss = new THREE.MeshFaceMaterial( materials );
 
-  let ground = new THREE.Mesh( geometry, planematerials );
-  ground.position.set(0, -123, 0);
-  scene.add( ground );
-  ground.receiveShadow = true;
+      let ground = new THREE.Mesh( geometry, planematerials );
+      ground.position.set(0, -123, 0);
+      scene.add( ground );
+      ground.receiveShadow = true;
 
     }
   );
 
 
-  if (controlChoice == 'keyboard') {
+  if (controlChoice === 'keyboard') {
     animateKeyboard();
-    $('#video').addClass("hidden");
+    $('#video').addClass('hidden');
     $('#canvas').addClass('hidden');
     $('.arrowcontrols').addClass('hidden');
 
-  } else if (controlChoice == 'webcam') {
+  } else if (controlChoice === 'webcam') {
     $('.infokeyboard').addClass('infowebcam');
     $('.infowebcam').removeClass('infokeyboard');
     var colors = new tracking.ColorTracker(['magenta']);
@@ -267,8 +264,8 @@ const scaleCloud = () => {
 
 
     if(scalenr >= random){
-        scalenr = 0;
-        scale = false;
+      scalenr = 0;
+      scale = false;
     }
 
   }
@@ -279,28 +276,28 @@ const scaleCloud = () => {
 const drawPath = () => {
 
 
-    setTimeout(function () {
+  setTimeout(function () {
 
 
-      let geometry = new THREE.IcosahedronGeometry(3, 0);
+    let geometry = new THREE.IcosahedronGeometry(3, 0);
 
-      var material = new THREE.MeshPhongMaterial( {color: '#E7FFFD', shading: THREE.FlatShading} );
-      cloud = new THREE.Mesh( geometry, material );
-      cloud.castShadow = true;
-      cloud.receiveShadow = true;
-      cloud.position.set(MovingCube.position.x + 4, MovingCube.position.y, MovingCube.position.z + 3);
+    var material = new THREE.MeshPhongMaterial( {color: '#E7FFFD', shading: THREE.FlatShading} );
+    cloud = new THREE.Mesh( geometry, material );
+    cloud.castShadow = true;
+    cloud.receiveShadow = true;
+    cloud.position.set(MovingCube.position.x + 4, MovingCube.position.y, MovingCube.position.z + 3);
 
-      scale = true;
-      random = Math.random() * (maximumCloudSize - minimumCloudSize) + minimumCloudSize;
+    scale = true;
+    random = Math.random() * (maximumCloudSize - minimumCloudSize) + minimumCloudSize;
 
-      scene.add( cloud );
+    scene.add( cloud );
 
 
-        // Do Something Here
-        // Then recall the parent function to
-        // create a recursive loop.
-        drawPath();
-    }, 1000);
+      // Do Something Here
+      // Then recall the parent function to
+      // create a recursive loop.
+    drawPath();
+  }, 1000);
 }
 
 
@@ -323,20 +320,13 @@ const renderKeyboard = () => {
 };
 
 const moveTorus = () => {
-// 100 iterations
 
-//let influence = Math.random() * (2.5 - 1) + 1;
-
-
-sinus = Math.sin( start ) + 10
-start += 0.05;
+  sinus = Math.sin( start ) + 10
+  start += 0.05;
 
   for(let i = 0; i < fixedArr.length; i++){
     let nr = i * 0.5 + 1;
-    //console.log("1: : :", FigureYpos[i]);
     fixedArr[i].shape.position.y = ((FigureYpos[i] + sinus * nr));
-
-    //console.log("2 : : :", fixedArr[i].position.x, fixedArr[i].position.y, fixedArr[i].position.z);
   }
 }
 
@@ -422,7 +412,18 @@ const update = () => {
   if (fixedArr.length !== 0) {
     if (movingUP || movingDOWN || movingLEFT || movingRIGHT || rotateUP || rotateDOWN || rotateLEFT || rotateRIGHT ) {
       checkCollision();
+      console.log("start");
+      if (player.gainNode.gain.value < 1) {
+          console.log('in gank schieten eh!');
+        player.gainNode.gain.value += 0.04;
+      }
+    }else {
+      if (player.gainNode.gain.value > 0.2) {
+        console.log('stilvallen');
+        player.gainNode.gain.value -= 0.03;
+      }
     }
+
 
   }
 
@@ -442,11 +443,11 @@ const update = () => {
     }
 
   }else if (rotateRIGHT) {
-     MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.009);
-     //bam = window.innerWidth-(window.innerWidth/4);
-     if (bam <= window.innerWidth-(window.innerWidth/4)) {
-        bam += 4;
-     };
+    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.009);
+    //bam = window.innerWidth-(window.innerWidth/4);
+    if (bam <= window.innerWidth-(window.innerWidth/4)) {
+       bam += 4;
+    };
 
   } else {
     //bam = window.innerWidth/2;
@@ -458,18 +459,18 @@ const update = () => {
   }
 
   if (checkCollisionArr.length != 0) {
-  var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
-  var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
-  camera.position.x = cameraOffset.x;
-  camera.position.y = cameraOffset.y;
-  camera.position.z = cameraOffset.z;
-  camera.lookAt( MovingCube.position );
+    var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
+    var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
+    camera.position.x = cameraOffset.x;
+    camera.position.y = cameraOffset.y;
+    camera.position.z = cameraOffset.z;
+    camera.lookAt( MovingCube.position );
   } else {
 
       var tween = new TWEEN.Tween(camera.position).to({
-          x: 310,
-          y: 180,
-          z: 730
+        x: 310,
+        y: 180,
+        z: 730
       }, 10).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
           camera.lookAt(fixedArr[0].position);
       }).onComplete(function () {
@@ -481,9 +482,9 @@ const update = () => {
       }).start();
 
       var tween = new TWEEN.Tween(MovingCube.position).to({
-          x: fixedArr[0].position.x,
-          y: fixedArr[0].position.y,
-          z: fixedArr[0].position.z
+        x: fixedArr[0].position.x,
+        y: fixedArr[0].position.y,
+        z: fixedArr[0].position.z
       }, 10).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
       }).onComplete(function () {
         //console.log("completetween2");
@@ -500,7 +501,7 @@ const update = () => {
 
 const updateForKeyboard = () => {
 
-document.addEventListener('keyup', function(event){
+  document.addEventListener('keyup', function(event){
 
     if(event.keyCode === 90){ //W UP
       movingUP = false;
@@ -574,7 +575,7 @@ const checkCollision = () => {
       checkCollisionArr[i].shape.material.color.setHex(0xff0000);
       checkCollisionArr.splice(i, 1);
     }
-    if (checkCollisionArr.length == 0) {
+    if (checkCollisionArr.length === 0) {
       //console.log("--- DONE ---");
 
     }
@@ -585,11 +586,11 @@ const checkCollision = () => {
 
 const play = (data=[]) => {
   arrBufferSounds = data;
-  player.playSoundtrack(data[0], SoundUtil.getPanning(bounds, flyingval));
+  player.playSoundtrack(data[0]);
   data.forEach(function(s) {
     arrBufferSounds.push(s);
   });
-}
+};
 
 //-----------------------------------------------------------------------
 const infoInteraction = () => {

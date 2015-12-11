@@ -2,104 +2,77 @@
 
 //import Effects from '../../data/Effects';
 //import MathUtil from '../util/MathUtil';
+import Utilsound from '../sound/Utilsound.js';
+//let PitchShift = require('soundbank-pitch-shift');
+
 
 export default class Player {
 
   constructor(ctx){
     this.ctx = ctx;
     this.panner = this.ctx.createPanner();
+    this.gainNode = this.ctx.createGain();
+    this.gainNode.gain.value = 0.6;
+
+    this.biquadFilter = this.ctx.createBiquadFilter();
+    this.biquadFilter.type = "highshelf";
+    this.biquadFilter.frequency.value = 3000;
+    //this.biquadFilter.Q.value = 20;
+    this.biquadFilter.gain.value = 25;
+    this.biquadFilter.detune.value = 400;
+
+    /*
+      this.biquadFilter = this.ctx.createBiquadFilter();
+    this.biquadFilter.type = "highpass";
+    this.biquadFilter.frequency.value = 7000;
+    this.biquadFilter.Q.value = 20;
+    this.biquadFilter.gain.value = 25;
+    */
   }
 
-  /*play(moving, fixed){
+  playSoundtrack(buffer) {
 
-    let source;
-
-    if(fixed.type === 'samples'){
-      source = this.ctx.createBufferSource();
-      source.buffer = fixed.sample;
-    }else{
-      source = this.ctx.createOscillator();
-      source.frequency.value = fixed.frequency;
-    }
-
-    let panner = this.ctx.createPanner();
-    panner.panningModel = 'equalpower';
-    panner.setPosition(
-      fixed.panning,
-      0,
-      1 - Math.abs(fixed.panning)
-    );
-
-    let gain = this.ctx.createGain();
-    gain.gain.value = fixed.volume;
-
-    source.connect(panner);
-    panner.connect(gain);
-
-    let effect = moving.effect.type;
-
-    if(effect === Effects.FILTER.type){
-
-      let filter = this.ctx.createBiquadFilter();
-
-      filter.type = Math.round(Math.random()) ? 'highpass': 'lowpass';
-      //filter.frequency.value = MathUtil.randomBetween(1000, 9000);
-
-      filter.gain.value = 60;
-      gain.connect(filter);
-
-      filter.connect(this.ctx.destination);
-
-    }else if(effect === Effects.DELAY.type){
-
-      let delay = this.ctx.createDelay(0.6 + (Math.random()*2));
-
-      gain.connect(delay);
-
-      gain.connect(this.ctx.destination);
-      delay.connect(this.ctx.destination);
-
-    }else{
-
-      gain.connect(this.ctx.destination);
-
-    }
-
-    source.start();
-
-    if(fixed.type === 'osc'){
-      source.stop(this.ctx.currentTime + 0.2);
-    }
-
-  }*/
-
-  setPannerPosition(Pos) {
-    console.log("in func");
-    /*this.panner.setPosition(
-      Pos,
-      0,
-      1 - Math.abs(Pos)
-    );*/
-  }
-
-  playSoundtrack(buffer, panningVal) {
-    console.log("playSoundtrack");
-    let source = this.ctx.createBufferSource(); // creates a sound source
-
+    let source = this.ctx.createBufferSource();
     this.panner.panningModel = 'equalpower';
-    /*this.panner.setPosition(
-      panningVal,
-      0,
-      1 - Math.abs(panningVal)
-    );*/
 
-    //source.connect(this.panner);
+    /*this.pitchShift.transpose = 9;
+    this.pitchShift.wet.value = 0;
+    this.pitchShift.dry.value = 5;*/
 
     source.buffer = buffer;
-    source.connect(this.panner);
-    this.panner.connect(this.ctx.destination);
+
+
+    this.distortion = this.ctx.createWaveShaper();
+    this.distortion.oversample = '1x';
+    this.distortion.curve = Utilsound.makeDistortionCurve(10);
+
+
+    source.connect(this.biquadFilter);
+
+    this.biquadFilter.connect(this.panner);
+
+    this.panner.connect(this.gainNode);
+
+    this.gainNode.connect(this.ctx.destination);
+
     source.start();
 
   }
+
+  /*makeDistortionCurve(amount) {
+    var k = typeof amount === 'number' ? amount : 50,
+      n_samples = 44100,
+      curve = new Float32Array(n_samples),
+      deg = Math.PI / 180,
+      i = 0,
+      x;
+    for ( ; i < n_samples; ++i ) {
+      x = i * 2 / n_samples - 1;
+      curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+    }
+    return curve;
+  }*/
+
+
 
 }
