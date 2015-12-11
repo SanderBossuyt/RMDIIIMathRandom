@@ -540,20 +540,11 @@ const update = () => {
 
     if(!tweenbool){
 
-      test();
-
-     /* var tween = new TWEEN.Tween(MovingCube.position).to({
-        x: fixedArr[0].position.x,
-        y: fixedArr[0].position.y,
-        z: fixedArr[0].position.z
-
-      }, 10).easing(TWEEN.Easing.Linear.None).onComplete(test).start();*/
+      fireTween();
 
 
-      //tween.onComplete(tweenplay);
     }
 
-          //fireOnce = true;
 
   }
 
@@ -563,9 +554,8 @@ const update = () => {
 
 };
 
-const test = () => {
+const fireTween = () => {
 
-console.log("loop or no");
 
        let t0 = new TWEEN.Tween(camera.position)
             .to({ x: 310,
@@ -603,11 +593,7 @@ console.log("loop or no");
 
 
 
-            tweenbool = true;
-
-
-        //console.log("completetween2");
-          //camera.lookAt(fixedArr[0].position);
+          tweenbool = true;
 
 
 };
