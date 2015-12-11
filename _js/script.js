@@ -18,6 +18,8 @@ let maximumCloudSize = 1.4;
 let minimumCloudSize = 0.7;
 let start = 0;
 let y, sinus;
+let musicInit = false;
+let musicSpeed = 300;
 
 let levelInput;
 let controlChoice;
@@ -182,6 +184,7 @@ const init = () => {
   });
 
   drawPath();
+  //playMusic();
 
 
 };
@@ -298,9 +301,34 @@ const drawPath = () => {
       // create a recursive loop.
     drawPath();
   }, 1000);
-}
+};
 
 
+
+const playMusic = () => {
+  setTimeout(function () {
+
+  console.log('in playMusic');
+
+
+  /*if(rotateUP && player.scale.d <= 600.50){
+    for (var key in player.scale) {
+      if (player.scale.hasOwnProperty(key)) {
+         player.scale[key] += 15;
+      }
+    }
+  }*/
+
+
+
+
+    if(musicInit){
+          player.play();
+    }
+
+    playMusic();
+  }, musicSpeed);
+};
 
 //-----------------------------------------------------------------------
 const animateKeyboard = () => {
@@ -311,7 +339,6 @@ const animateKeyboard = () => {
 const renderKeyboard = () => {
   update();
   scaleCloud();
-
   moveTorus();
 
   updateForKeyboard();
@@ -328,7 +355,7 @@ const moveTorus = () => {
     let nr = i * 0.5 + 1;
     fixedArr[i].shape.position.y = ((FigureYpos[i] + sinus * nr));
   }
-}
+};
 
 
 
@@ -409,6 +436,8 @@ const onColorMove = (event) => {
 //-----------------------------------------------------------------------
 const update = () => {
 
+
+
   if (fixedArr.length !== 0) {
     if (movingUP || movingDOWN || movingLEFT || movingRIGHT || rotateUP || rotateDOWN || rotateLEFT || rotateRIGHT ) {
       checkCollision();
@@ -425,27 +454,49 @@ const update = () => {
     }
 
 
+
+
   }
 
   var rotation_matrix = new THREE.Matrix4().identity();
 
-  if (movingUP) MovingCube.translateZ(-0.8);
-  if (movingDOWN) MovingCube.translateZ(0.9);
+  if (movingUP) {
+    MovingCube.translateZ(-0.8);
+
+
+  };
+  if (movingDOWN){
+     MovingCube.translateZ(0.9);
+
+  }
   if (movingLEFT) MovingCube.translateX(-0.9);
   if (movingRIGHT) MovingCube.translateX(0.9);
-  if (rotateUP) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.009);
-  if (rotateDOWN) MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.009);
+  if (rotateUP) {
+    MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), 0.009);
+    if(musicSpeed >= 150){
+      musicSpeed -= 20;
+    }
+  };
+  if (rotateDOWN){
+    MovingCube.rotateOnAxis( new THREE.Vector3(1, 0, 0), -0.009);
+     if(musicSpeed <= 533){
+      musicSpeed += 20;
+    }
+
+  }
   if (rotateLEFT) {
     MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.009);
     //bam = (window.innerWidth/4);
-    if (bam >= (window.innerWidth/4)) {
+
+
+    if (bam >= (window.innerWidth/7)) {
       bam -= 4;
     }
 
   }else if (rotateRIGHT) {
     MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.009);
     //bam = window.innerWidth-(window.innerWidth/4);
-    if (bam <= window.innerWidth-(window.innerWidth/4)) {
+    if (bam <= window.innerWidth-(window.innerWidth/7)) {
        bam += 4;
     };
 
@@ -495,6 +546,7 @@ const update = () => {
 
   //console.log("pannerbam -> ", bam);
   player.panner.setPosition(SoundUtil.getPanning(bounds, bam), 0, 1 - Math.abs(SoundUtil.getPanning(bounds, bam)));
+
 
 };
 
@@ -571,7 +623,7 @@ const checkCollision = () => {
         checkCollisionArr[i].position.y.between(MovingCube.position.y-35, MovingCube.position.y+35) &&
         checkCollisionArr[i].position.z.between(MovingCube.position.z-22, MovingCube.position.z+22)
       ) {
-      player.playSoundtrack(arrBufferSounds[1], SoundUtil.getPanning(bounds, flyingval));
+     // player.playSoundtrack(arrBufferSounds[1], SoundUtil.getPanning(bounds, flyingval));
       checkCollisionArr[i].shape.material.color.setHex(0xff0000);
       checkCollisionArr.splice(i, 1);
     }
@@ -586,7 +638,9 @@ const checkCollision = () => {
 
 const play = (data=[]) => {
   arrBufferSounds = data;
-  player.playSoundtrack(data[0]);
+  player.playSoundtrack(data[2], 3);
+  playMusic();
+  musicInit = true;
   data.forEach(function(s) {
     arrBufferSounds.push(s);
   });

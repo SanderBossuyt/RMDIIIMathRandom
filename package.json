@@ -44,6 +44,7 @@
     "soundbank-pitch-shift": "^1.0.3",
     "three-orbit-controls": "^72.0.0",
     "tracking": "^1.1.1",
+    "tunajs": "^0.4.2",
     "tween.js": "^16.3.1",
     "vision": "^3.0.0",
     "yar": "^4.2.0"

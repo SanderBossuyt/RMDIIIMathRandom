@@ -10,6 +10,10 @@ module.exports = {
     {
       name: 'ringHit',
       file: '/assets/sound/ringHit.wav'
+    },
+    {
+      name: 'bufferconcert',
+      file: '/assets/sound/concert-crowd.ogg'
     }
 
   ]
