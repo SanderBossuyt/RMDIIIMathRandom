@@ -11,6 +11,7 @@ let TWEEN = require('tween.js');
 //let video = document.getElementById('video');
 let canvas = document.getElementById('canvas');
 //let context = canvas.getContext('2d');
+    let navigator = window.navigator;
 
 let scene, camera, renderer, MovingCube, cloud;
 let scalenr = 0.5;
@@ -178,6 +179,18 @@ const init = () => {
     $('.infokeyboard').addClass('infowebcam');
     $('.infowebcam').removeClass('infokeyboard');
 
+    checkWebcam();
+
+
+/*p.then(function(mediastream) {
+   var video = document.querySelector('video');
+   video.src = window.URL.createObjectURL(mediaStream);
+   video.onloadedmetadata = function(e) {
+      // Do something with the video here.
+   };
+};
+
+p.catch(function(e) { console.log(e.name); }); // always check for errors at the end.*/
 
     let colors = new tracking.ColorTracker(['magenta', 'yellow']);
 
@@ -285,6 +298,28 @@ const scaleCloud = () => {
   }
 }
 
+const checkWebcam = () => {
+
+  navigator.mediaDevices.enumerateDevices().then(function(MediaDeviceInfo) {
+    for(let i = 0; i < MediaDeviceInfo.length; i++){
+      if(MediaDeviceInfo[i].kind === "videoinput"){
+        console.log("video");
+
+      }else{
+        console.log("no video!");
+
+
+      }
+    }
+
+     //if($('#video').attr("src")){
+       //   console.log("true");
+      //}
+  });
+
+
+};
+
 
 
 const drawPath = () => {
@@ -340,6 +375,9 @@ const playMusic = () => {
       }
     }
   }*/
+
+
+//  navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(mediaStream) { console.log("yes: ", mediaStream);});
 
 
     if(musicInit){
