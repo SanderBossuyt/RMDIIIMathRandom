@@ -25,7 +25,7 @@ export default class Player {
     this.tuna = new Tuna(this.ctx);
     this.timeValue = 333;
     this.position = 0;
-    this.song = "rsltl-f--rsltl----rsltl-f--fsfr----rsltl-f--rsltl----rsltl-f--fsfrr-------";
+    this.song = "-rsltl-f---rsltl----rsltl-f---fsfrr----rsltl-f--rsltl----rsltl-f--fsfrr-------zytly-lt-sl-zytly------zytly-lt-sl-fsfrr-------";
     this.scale = {
           d: 523.25,
           r: 554.37,
@@ -33,7 +33,9 @@ export default class Player {
           f: 698.46,
           s: 739.99,
           l: 830.61,
-          t: 932.33
+          t: 932.33,
+          y: 1046.50,
+          z: 1108.73
     };
     //this.biquadFilter.detune.value = 400;
 
@@ -56,11 +58,11 @@ export default class Player {
         delayTimeRight: 250 //1 to 10000 (milliseconds)
     });
     this.convolver = new this.tuna.Convolver({
-        highCut: 1000,                         //20 to 22050
+        highCut: 800,                         //20 to 22050
         lowCut: 20,                             //20 to 22050
         dryLevel: 1,                            //0 to 1+
         wetLevel: 1,                            //0 to 1+
-        level: 1,                               //0 to 1+, adjusts total output of both wet and dry
+        level: 0.5,                               //0 to 1+, adjusts total output of both wet and dry
         impulse: "../../../assets/sound/concert-crowd.ogg",    //the path to your impulse response
         bypass: 0
     });

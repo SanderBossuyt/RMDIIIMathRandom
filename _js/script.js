@@ -1,7 +1,8 @@
 'use strict';
 
 import {settings, figure, sets} from './data/';
-//import helloworldTpl from '../_hbs/helloworld';
+import {SoundUtil} from './modules/util/';
+import {Player, BufferLoader} from './modules/sound/';
 import Torus from './modules/render/Torus';
 let Tracking = require('tracking/build/tracking.js');
 let OrbitControls = require('three-orbit-controls')(THREE);
@@ -24,13 +25,11 @@ let trackedColor = "none";
 let tweenbool = false;
 let levelInput;
 let controlChoice;
-let bam = window.innerWidth/2;
+let pannerVal = window.innerWidth/2;
 let ctx;
 let player;
 let bounds;
 let flyingval = 700;
-import {SoundUtil} from './modules/util/';
-import {Player, BufferLoader} from './modules/sound/';
 let fireOnce = false;
 let movingUP = false;
 let movingDOWN = false;
@@ -48,6 +47,11 @@ let collidableMeshList = [];
 let arrBufferSounds = [];
 let FigureYpos = [];
 let scale;
+
+let ground;
+let boolMagentaAnim = true;
+let boolYellowAnim = true;
+
 
 let number = 1;
 
@@ -70,7 +74,7 @@ const init = () => {
     border: 80
   };
 
-  bam = bounds.width/2;
+  pannerVal = bounds.width/2;
 
   let level = levelInput;
 
@@ -134,7 +138,7 @@ const init = () => {
   /*var loaderPlanet = new THREE.JSONLoader();
 
   loaderPlanet.load(
-   'assets/bam.js',
+   'assets/pannerVal.js',
     function(geometry, materials){
       let materialss = new THREE.MeshBasicMaterial( { color: '#D74C4F' } );
        var material = new THREE.MeshFaceMaterial( materials );
@@ -155,7 +159,7 @@ const init = () => {
       let planematerials = new THREE.MeshPhongMaterial( { color: '#8BAABE', shading: THREE.SmoothShading } );
       //var materialsss = new THREE.MeshFaceMaterial( materials );
 
-      let ground = new THREE.Mesh( geometry, planematerials );
+      ground = new THREE.Mesh( geometry, planematerials );
       ground.position.set(0, -123, 0);
       scene.add( ground );
       ground.receiveShadow = true;
@@ -375,8 +379,6 @@ const moveTorus = () => {
 };
 
 
-
-
 //-----------------------------------------------------------------------
 const animateWebcam = () => {
   requestAnimationFrame(() => animateWebcam());
@@ -388,6 +390,22 @@ const renderWebcam = () => {
   scaleCloud();
   TWEEN.update();
   renderer.render(scene, camera);
+};
+
+const fireTweenMagenta = () => {
+  let tween = new TWEEN.Tween(ground.material.color)
+      .to({r: 0.9, g: 0.3, b: 0.5}, 300)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start()
+    boolMagentaAnim = false;
+};
+
+const fireTweenYellow = () => {
+  let tween = new TWEEN.Tween(ground.material.color)
+      .to({r: 0.2, g: 0.4, b: 0.7}, 300)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start()
+    boolYellowAnim = false;
 };
 
 
@@ -403,10 +421,23 @@ const onColorMove = (event) => {
     rotateLEFT = false;
     rotateRIGHT = false;
     return;
+  } else {
+
+    trackedColor = event.data[0].color;
+  //console.log(ground.material.color);
+    if (trackedColor === "magenta") {
+      boolYellowAnim = true;
+      if (boolMagentaAnim) {
+        fireTweenMagenta();
+      }
+    }else if (trackedColor === "yellow") {
+      boolMagentaAnim = true;
+      if (boolYellowAnim) {
+        fireTweenYellow();
+      }
+    }
+
   }
-
-  trackedColor = event.data[0].color;
-
 
   var maxRect;
   var maxRectArea = 0;
@@ -456,8 +487,6 @@ const onColorMove = (event) => {
 //-----------------------------------------------------------------------
 const update = () => {
 
-
-
   if (fixedArr.length !== 0) {
     if (movingUP || movingDOWN || movingLEFT || movingRIGHT || rotateUP || rotateDOWN || rotateLEFT || rotateRIGHT ) {
       checkCollision();
@@ -474,20 +503,15 @@ const update = () => {
     }
 
 
-
-
   }
 
   var rotation_matrix = new THREE.Matrix4().identity();
 
   if (movingUP) {
     MovingCube.translateZ(-0.8);
-
-
   };
   if (movingDOWN){
      MovingCube.translateZ(0.9);
-
   }
   if (movingLEFT) MovingCube.translateX(-0.9);
   if (movingRIGHT) MovingCube.translateX(0.9);
@@ -506,26 +530,26 @@ const update = () => {
   }
   if (rotateLEFT) {
     MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.009);
-    //bam = (window.innerWidth/4);
+    //pannerVal = (window.innerWidth/4);
 
 
-    if (bam >= (window.innerWidth/7)) {
-      bam -= 4;
+    if (pannerVal >= (window.innerWidth/7)) {
+      pannerVal -= 4;
     }
 
   }else if (rotateRIGHT) {
     MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.009);
-    //bam = window.innerWidth-(window.innerWidth/4);
-    if (bam <= window.innerWidth-(window.innerWidth/7)) {
-       bam += 4;
+    //pannerVal = window.innerWidth-(window.innerWidth/4);
+    if (pannerVal <= window.innerWidth-(window.innerWidth/7)) {
+       pannerVal += 4;
     };
 
   } else {
-    //bam = window.innerWidth/2;
-    if (bam < (window.innerWidth/2-3)) {
-      bam +=7;
-    } else if (bam > (window.innerWidth/2+3)) {
-      bam -=7;
+    //pannerVal = window.innerWidth/2;
+    if (pannerVal < (window.innerWidth/2-3)) {
+      pannerVal +=7;
+    } else if (pannerVal > (window.innerWidth/2+3)) {
+      pannerVal -=7;
     }
   }
 
@@ -539,17 +563,14 @@ const update = () => {
   } else {
 
     if(!tweenbool){
-
       fireTween();
-
-
     }
 
 
   }
 
-  //console.log("pannerbam -> ", bam);
-  player.panner.setPosition(SoundUtil.getPanning(bounds, bam), 0, 1 - Math.abs(SoundUtil.getPanning(bounds, bam)));
+  //console.log("pannerpannerVal -> ", pannerVal);
+  player.panner.setPosition(SoundUtil.getPanning(bounds, pannerVal), 0, 1 - Math.abs(SoundUtil.getPanning(bounds, pannerVal)));
 
 
 };
