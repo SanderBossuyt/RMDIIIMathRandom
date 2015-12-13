@@ -48,7 +48,7 @@ let collidableMeshList = [];
 let arrBufferSounds = [];
 let FigureYpos = [];
 let scale;
-
+let thisFigure;
 let ground;
 let skyBox;
 let boolMagentaAnim = true;
@@ -119,7 +119,7 @@ const init = () => {
   let pickLevelFigure = levelArr[number];
   let setting = pickLevelFigure;
 
-  let thisFigure = figure[setting.figure];
+  thisFigure = figure[setting.figure];
   createFixed(setting, thisFigure);
 
 
@@ -616,6 +616,24 @@ const update = () => {
 };
 
 const fireTween = () => {
+
+  var material = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        linewidth: 5,
+        fog: true
+    });
+  console.log("fig: ",thisFigure);
+
+  var geometry = new THREE.Geometry();
+  for(let i = 0; i < thisFigure.length; i++){
+    geometry.vertices.push(new THREE.Vector3(thisFigure[i].x, thisFigure[i].y, thisFigure[i].z+20));
+  }
+
+
+    var line = new THREE.Line(geometry, material);
+
+    scene.add(line);
+    renderer.render(scene, camera);
 
 
        let t0 = new TWEEN.Tween(camera.position)
