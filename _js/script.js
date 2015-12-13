@@ -637,7 +637,7 @@ const fireTween = () => {
 
 
        let t0 = new TWEEN.Tween(camera.position)
-            .to({ x: 310,
+            .to({ x: 110,
                   y: 180,
                   z: 730
             }, 2000)
@@ -659,9 +659,9 @@ const fireTween = () => {
 
 
           let t1 = new TWEEN.Tween(MovingCube.position)
-            .to({ x: fixedArr[0].position.x,
-                  y: fixedArr[0].position.y,
-                  z: fixedArr[0].position.z
+            .to({ x: fixedArr[1].position.x+60,
+                  y: fixedArr[1].position.y,
+                  z: fixedArr[1].position.z
             }, 2000)
             .delay(1000)
             .easing(TWEEN.Easing.Linear.None);

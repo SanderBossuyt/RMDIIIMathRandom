@@ -4,23 +4,23 @@ module.exports = [
 
   {
     name: 'figure1',
-    amount: 6,
+    amount: 3,
     type: 'easy',
-    figure: 'finn'
+    figure: 'triangle'
   },
 
   {
     name: 'figure2',
-    amount: 7,
+    amount: 4,
     type: 'medium',
-    figure: 'shark'
+    figure: 'square'
   },
 
   {
     name: 'figure3',
-    amount: 3,
+    amount: 6,
     type: 'insane',
-    figure: 'dev'
+    figure: 'circle'
   }
 
 
