@@ -12,7 +12,7 @@ let TWEEN = require('tween.js');
 let canvas = document.getElementById('canvas');
 //let context = canvas.getContext('2d');
 let navigator = window.navigator;
-
+let webcam = false;
 let scene, camera, renderer, MovingCube, cloud;
 let scalenr = 0.5;
 let random;
@@ -177,27 +177,14 @@ const init = () => {
     $('.arrowcontrols').addClass('hidden');
 
   } else if (controlChoice === 'webcam') {
-    $('.infokeyboard').addClass('infowebcam');
-    $('.infowebcam').removeClass('infokeyboard');
 
-checkWebcam();
+      checkWebcam();
+
+      $('.infokeyboard').addClass('infowebcam');
+      $('.infowebcam').removeClass('infokeyboard');
 
 
-/*p.then(function(mediastream) {
-   var video = document.querySelector('video');
-   video.src = window.URL.createObjectURL(mediaStream);
-   video.onloadedmetadata = function(e) {
-      // Do something with the video here.
-   };
-};
 
-p.catch(function(e) { console.log(e.name); }); // always check for errors at the end.*/
-
-    let colors = new tracking.ColorTracker(['magenta', 'yellow']);
-
-    tracking.track('#video', colors, { camera: true });
-    colors.on('track', onColorMove);
-    animateWebcam();
   }
 
   $('.backtohome').on('click', function(e){
@@ -304,18 +291,16 @@ const checkWebcam = () => {
   navigator.mediaDevices.enumerateDevices().then(function(MediaDeviceInfo) {
     for(let i = 0; i < MediaDeviceInfo.length; i++){
       if(MediaDeviceInfo[i].kind === "videoinput"){
-        console.log("video");
+        webcam = true;
 
-      }else{
-        console.log("no video!");
+        let colors = new tracking.ColorTracker(['magenta', 'yellow']);
 
-
+        tracking.track('#video', colors, { camera: true });
+        colors.on('track', onColorMove);
+        animateWebcam();
       }
     }
 
-     //if($('#video').attr("src")){
-       //   console.log("true");
-      //}
   });
 
 
@@ -418,8 +403,12 @@ const moveTorus = () => {
 
 //-----------------------------------------------------------------------
 const animateWebcam = () => {
+  if(webcam === false){
+    animateKeyboard();
+  }
   requestAnimationFrame(() => animateWebcam());
   renderWebcam();
+
 };
 //-----------------------------------------------------------------------
 const renderWebcam = () => {
