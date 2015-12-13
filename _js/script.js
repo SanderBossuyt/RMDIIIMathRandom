@@ -11,7 +11,7 @@ let TWEEN = require('tween.js');
 //let video = document.getElementById('video');
 let canvas = document.getElementById('canvas');
 //let context = canvas.getContext('2d');
-    let navigator = window.navigator;
+let navigator = window.navigator;
 
 let scene, camera, renderer, MovingCube, cloud;
 let scalenr = 0.5;
@@ -50,6 +50,7 @@ let FigureYpos = [];
 let scale;
 
 let ground;
+let skyBox;
 let boolMagentaAnim = true;
 let boolYellowAnim = true;
 
@@ -179,7 +180,7 @@ const init = () => {
     $('.infokeyboard').addClass('infowebcam');
     $('.infowebcam').removeClass('infokeyboard');
 
-    checkWebcam();
+checkWebcam();
 
 
 /*p.then(function(mediastream) {
@@ -215,7 +216,7 @@ p.catch(function(e) { console.log(e.name); }); // always check for errors at the
 const makeScene = () => {
   var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
   var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: '#000000', side: THREE.BackSide } );
-  var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+  skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
   scene.add(skyBox);
   scene.fog = new THREE.FogExp2( '#0d305b', 0.00019 );
   var hemiLight = new THREE.HemisphereLight( '#4c6286', '#4c6286', 0.6 );
@@ -376,9 +377,7 @@ const playMusic = () => {
     }
   }*/
 
-
 //  navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(mediaStream) { console.log("yes: ", mediaStream);});
-
 
     if(musicInit){
           player.play();
@@ -432,17 +431,29 @@ const renderWebcam = () => {
 
 const fireTweenMagenta = () => {
   let tween = new TWEEN.Tween(ground.material.color)
-      .to({r: 0.9, g: 0.3, b: 0.5}, 300)
+      .to({r: 0.6, g: 0.2, b: 0.2}, 900)
       .easing(TWEEN.Easing.Quartic.Out)
       .start()
+
+  let tween2 = new TWEEN.Tween(skyBox.material.color)
+      .to({r: 0.6, g: 0.2, b: 0.2}, 1400)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start()
+
     boolMagentaAnim = false;
 };
 
 const fireTweenYellow = () => {
   let tween = new TWEEN.Tween(ground.material.color)
-      .to({r: 0.2, g: 0.4, b: 0.7}, 300)
+      .to({r: 0.1, g: 0.4, b: 0.7}, 900)
       .easing(TWEEN.Easing.Quartic.Out)
       .start()
+
+  let tween2 = new TWEEN.Tween(skyBox.material.color)
+      .to({r: 0.5, g: 0.6, b: 0.9}, 1400)
+      .easing(TWEEN.Easing.Quartic.Out)
+      .start()
+
     boolYellowAnim = false;
 };
 
@@ -458,6 +469,8 @@ const onColorMove = (event) => {
     rotateDOWN = false;
     rotateLEFT = false;
     rotateRIGHT = false;
+
+
     return;
   } else {
 
@@ -776,4 +789,3 @@ $.getJSON( 'api/level')
 
 
 //---------------------------------------------->END
-

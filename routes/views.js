@@ -21,6 +21,18 @@ module.exports = [
   },
   {
     method: 'GET',
+    path: '/home',
+    handler: (request, reply) => {
+      request.session.clear();
+      //request.session.set('data', {});
+      return reply.view('index', {
+        name: 'Bossuyt Sander & Verheye Lieselot',
+        title: 'connect the dots'
+      });
+    }
+  },
+  {
+    method: 'GET',
     path: '/connectthedots',
     handler: (request, reply) => {
       if(request.session._store.level && request.session._store.playmode){
