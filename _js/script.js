@@ -339,10 +339,6 @@ const drawPath = () => {
 
     scene.add( cloud );
 
-
-      // Do Something Here
-      // Then recall the parent function to
-      // create a recursive loop.
     drawPath();
   }, 1000);
 };
@@ -352,15 +348,6 @@ const drawPath = () => {
 const playMusic = () => {
   setTimeout(function () {
 
-
-
-  /*if(rotateUP && player.scale.d <= 600.50){
-    for (var key in player.scale) {
-      if (player.scale.hasOwnProperty(key)) {
-         player.scale[key] += 15;
-      }
-    }
-  }*/
 
 //  navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(mediaStream) { console.log("yes: ", mediaStream);});
 
@@ -618,15 +605,18 @@ const update = () => {
 const fireTween = () => {
 
   var material = new THREE.LineBasicMaterial({
-        color: 0xffffff,
-        linewidth: 5,
+        color: 0xf9f9f9,
+        linewidth: 4,
         fog: true
     });
-  console.log("fig: ",thisFigure);
+  //console.log("fig: ",thisFigure);
 
   var geometry = new THREE.Geometry();
   for(let i = 0; i < thisFigure.length; i++){
     geometry.vertices.push(new THREE.Vector3(thisFigure[i].x, thisFigure[i].y, thisFigure[i].z+20));
+    if (i == thisFigure.length-1) {
+      geometry.vertices.push(new THREE.Vector3(thisFigure[0].x, thisFigure[0].y, thisFigure[0].z+20));
+    }
   }
 
 
