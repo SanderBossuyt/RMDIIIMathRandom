@@ -14,7 +14,7 @@ let canvas = document.getElementById('canvas');
 let navigator = window.navigator;
 let webcam = false;
 let scene, camera, renderer, MovingCube, cloud;
-let scalenr = 0.5;
+let scalenr = 0;
 let random;
 let maximumCloudSize = 1.4;
 let minimumCloudSize = 0.7;
@@ -220,9 +220,9 @@ const makeScene = () => {
   dirLight.position.multiplyScalar( 50 );
   scene.add( dirLight );
   dirLight.castShadow = true;
-  dirLight.shadowMapWidth = 2048;
-  dirLight.shadowMapHeight = 2048;
-  var d = 90;
+  dirLight.shadowMapWidth = 4096;
+  dirLight.shadowMapHeight = 4096;
+  var d = 500;
   dirLight.shadowCameraLeft = -d;
   dirLight.shadowCameraRight = d;
   dirLight.shadowCameraTop = d;
@@ -269,7 +269,8 @@ const createFixed = (setting, fig) => {
 };
 
 const scaleCloud = () => {
-  if(cloud && scale){
+
+if(cloud && scale){
 
     scalenr+= 0.1;
 
@@ -284,6 +285,14 @@ const scaleCloud = () => {
     }
 
   }
+
+
+
+
+
+
+
+
 }
 
 const checkWebcam = () => {
@@ -321,7 +330,7 @@ const drawPath = () => {
     cloud = new THREE.Mesh( geometry, material );
     cloud.castShadow = true;
     cloud.receiveShadow = true;
-    cloud.position.set(MovingCube.position.x + 4, MovingCube.position.y, MovingCube.position.z + 3);
+    cloud.position.set(MovingCube.position.x, MovingCube.position.y, MovingCube.position.z);
 
 
     if(trackedColor !== "none"){
@@ -333,14 +342,19 @@ const drawPath = () => {
       }
     }
 
-
-    scale = true;
     random = Math.random() * (maximumCloudSize - minimumCloudSize) + minimumCloudSize;
+       // scale = true;
 
-    scene.add( cloud );
+  }, 400);
 
-    drawPath();
-  }, 1000);
+  setTimeout(function (){
+      scale = true;
+
+      scene.add( cloud );
+      console.log(scale);
+      drawPath();
+
+    }, 1300);
 };
 
 
