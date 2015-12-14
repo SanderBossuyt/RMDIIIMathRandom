@@ -106,8 +106,8 @@ const init = () => {
 
   makeScene();
 
-  var meshke = new THREE.MeshLambertMaterial( { color: '#f9f9f9', shading: THREE.FlatShading, overdraw: 0.5 } );
-  var MovingCubeGeom = new THREE.CubeGeometry(10, 10, 10);
+  let meshke = new THREE.MeshLambertMaterial( { color: '#f9f9f9', shading: THREE.FlatShading, overdraw: 0.5 } );
+  let MovingCubeGeom = new THREE.CubeGeometry(10, 10, 10);
   MovingCube = new THREE.Mesh( MovingCubeGeom, meshke );
 
   for(let i = 0; i < settings.length; i++){
@@ -124,12 +124,12 @@ const init = () => {
   createFixed(setting, thisFigure);
 
 
-  var loader = new THREE.JSONLoader();
+  let loader = new THREE.JSONLoader();
 
   loader.load(
    'assets/final.js',
     function(geometry, materials){
-      var materialsss = new THREE.MeshFaceMaterial( materials );
+      let materialsss = new THREE.MeshFaceMaterial( materials );
       MovingCube = new THREE.Mesh( geometry, materialsss );
       MovingCube.position.set(0, 25.1, 0);
       MovingCube.castShadow = true;
@@ -138,14 +138,14 @@ const init = () => {
     }
   );
 
-  /*var loaderPlanet = new THREE.JSONLoader();
+  /*let loaderPlanet = new THREE.JSONLoader();
 
   loaderPlanet.load(
    'assets/pannerVal.js',
     function(geometry, materials){
       let materialss = new THREE.MeshBasicMaterial( { color: '#D74C4F' } );
-       var material = new THREE.MeshFaceMaterial( materials );
-      var planet = new THREE.Mesh( geometry, materialss );
+       let material = new THREE.MeshFaceMaterial( materials );
+      let planet = new THREE.Mesh( geometry, materialss );
       planet.position.set(0, 0, 0);
       planet.castShadow = true;
       planet.receiveShadow = true;
@@ -154,13 +154,13 @@ const init = () => {
     }
   );*/
 
-  var loaderPlane = new THREE.JSONLoader();
+  let loaderPlane = new THREE.JSONLoader();
 
   loaderPlane.load(
    'assets/plane.js',
     function(geometry, materials){
       let planematerials = new THREE.MeshPhongMaterial( { color: '#8BAABE', shading: THREE.SmoothShading } );
-      //var materialsss = new THREE.MeshFaceMaterial( materials );
+      //let materialsss = new THREE.MeshFaceMaterial( materials );
 
       ground = new THREE.Mesh( geometry, planematerials );
       ground.position.set(0, -123, 0);
@@ -202,20 +202,20 @@ const init = () => {
 //--------------------------------------------------------------------------
 
 const makeScene = () => {
-  var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
-  var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: '#000000', side: THREE.BackSide } );
+  let skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
+  let skyBoxMaterial = new THREE.MeshBasicMaterial( { color: '#000000', side: THREE.BackSide } );
   skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
   scene.add(skyBox);
   scene.fog = new THREE.FogExp2( '#0d305b', 0.00019 );
-  var hemiLight = new THREE.HemisphereLight( '#4c6286', '#4c6286', 0.6 );
-//var hemiLight = new THREE.HemisphereLight( '#6b2365', '#6b2365', 0.6 );
+  let hemiLight = new THREE.HemisphereLight( '#4c6286', '#4c6286', 0.6 );
+//let hemiLight = new THREE.HemisphereLight( '#6b2365', '#6b2365', 0.6 );
 
 
   hemiLight.color.setHSL( 0.6, 1, 0.6 );
   hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
   hemiLight.position.set( 0, 500, 0 );
   scene.add( hemiLight );
-  var dirLight = new THREE.DirectionalLight( '#4c6286', 1 );
+  let dirLight = new THREE.DirectionalLight( '#4c6286', 1 );
   dirLight.color.setHSL( 0.1, 1, 0.75 );
   dirLight.position.set( -1, 1.5, 1 );
   dirLight.position.multiplyScalar( 50 );
@@ -223,15 +223,15 @@ const makeScene = () => {
   dirLight.castShadow = true;
   dirLight.shadowMapWidth = 4096;
   dirLight.shadowMapHeight = 4096;
-  var d = 500;
+  let d = 500;
   dirLight.shadowCameraLeft = -d;
   dirLight.shadowCameraRight = d;
   dirLight.shadowCameraTop = d;
   dirLight.shadowCameraBottom = -d;
   dirLight.shadowCameraFar = 3500;
   dirLight.shadowBias = -0.001;
-  var particle, e;
-  for ( var zpos = -1000; zpos < 800; zpos+=2 ) {
+  let particle, e;
+  for ( let zpos = -1000; zpos < 800; zpos+=2 ) {
     particle = new THREE.Particle(e);
     particle.position.x = Math.random() * 6000 - 3000;
     particle.position.y = Math.random() * 6000 - 3000;
@@ -326,7 +326,7 @@ const drawPath = () => {
 
     let geometry = new THREE.IcosahedronGeometry(3, 0);
 
-    var material = new THREE.MeshPhongMaterial( {color: '#E7FFFD', shading: THREE.FlatShading} );
+    let material = new THREE.MeshPhongMaterial( {color: '#E7FFFD', shading: THREE.FlatShading} );
 
     cloud = new THREE.Mesh( geometry, material );
     cloud.castShadow = true;
@@ -488,9 +488,9 @@ const onColorMove = (event) => {
 
   }
 
-  var maxRect;
-  var maxRectArea = 0;
-  var rectWidth, rectHeight;
+  let maxRect;
+  let maxRectArea = 0;
+  let rectWidth, rectHeight;
 
   event.data.forEach(function(rect) {
     if (rect.width * rect.height > maxRectArea){
@@ -500,8 +500,8 @@ const onColorMove = (event) => {
   });
 
   if (maxRectArea > 0) {
-    var rectCenterX = maxRect.x + (maxRect.width/2);
-    var rectCenterY = maxRect.y + (maxRect.height/2);
+    let rectCenterX = maxRect.x + (maxRect.width/2);
+    let rectCenterY = maxRect.y + (maxRect.height/2);
 
     movingUP = true;
 
@@ -556,7 +556,7 @@ const update = () => {
 
   }
 
-  var rotation_matrix = new THREE.Matrix4().identity();
+  let rotation_matrix = new THREE.Matrix4().identity();
 
   if (movingUP) {
     MovingCube.translateZ(-1.5);
@@ -605,8 +605,8 @@ const update = () => {
   }
 
   if (checkCollisionArr.length != 0) {
-    var relativeCameraOffset = new THREE.Vector3(0, 50, 200);
-    var cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
+    let relativeCameraOffset = new THREE.Vector3(0, 50, 200);
+    let cameraOffset = relativeCameraOffset.applyMatrix4( MovingCube.matrixWorld );
     camera.position.x = cameraOffset.x;
     camera.position.y = cameraOffset.y;
     camera.position.z = cameraOffset.z;
@@ -628,14 +628,14 @@ const update = () => {
 
 const fireTween = () => {
 
-  var material = new THREE.LineBasicMaterial({
+  let material = new THREE.LineBasicMaterial({
         color: 0xf9f9f9,
         linewidth: 4,
         fog: true
     });
   //console.log("fig: ",thisFigure);
 
-  var geometry = new THREE.Geometry();
+  let geometry = new THREE.Geometry();
   for(let i = 0; i < thisFigure.length; i++){
     geometry.vertices.push(new THREE.Vector3(thisFigure[i].x, thisFigure[i].y, thisFigure[i].z+20));
     if (i == thisFigure.length-1) {
@@ -644,7 +644,7 @@ const fireTween = () => {
   }
 
 
-    var line = new THREE.Line(geometry, material);
+    let line = new THREE.Line(geometry, material);
 
     scene.add(line);
     renderer.render(scene, camera);
@@ -665,12 +665,13 @@ const fireTween = () => {
             .onComplete(function() {
               $('.backtohome').removeClass('hidden');
               $('.info-orbitcontrols').removeClass('hidden');
-              new OrbitControls(camera);
+              let orbitcontrols = new OrbitControls(camera);
+              orbitcontrols.maxPolarAngle = Math.PI/2;
+              orbitcontrols.maxDistance = 3000;
 
             });
 
           t0.start();
-
 
 
           let t1 = new TWEEN.Tween(MovingCube.position)
@@ -754,7 +755,7 @@ const updateForKeyboard = () => {
 
 //---------------between function for collision check--------------------
 Number.prototype.between = function(a, b) {
-  var min = Math.min.apply(Math, [a, b]),
+  let min = Math.min.apply(Math, [a, b]),
   max = Math.max.apply(Math, [a, b]);
   return this > min && this < max;
 };
@@ -807,7 +808,7 @@ $.getJSON( 'api/level')
     init();
   })
   .fail(function( jqxhr, textStatus, error ) {
-    var err = textStatus + ', ' + error;
+    let err = textStatus + ', ' + error;
   });
 
 
