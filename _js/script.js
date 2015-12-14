@@ -12,6 +12,7 @@ let TWEEN = require('tween.js');
 let canvas = document.getElementById('canvas');
 //let context = canvas.getContext('2d');
 let navigator = window.navigator;
+let inactive = false;
 let webcam = false;
 let scene, camera, renderer, MovingCube, cloud;
 let scalenr = 0;
@@ -345,7 +346,10 @@ const drawPath = () => {
     random = Math.random() * (maximumCloudSize - minimumCloudSize) + minimumCloudSize;
        // scale = true;
 
-  }, 400);
+  }, 300);
+
+  if(!inactive){
+
 
   setTimeout(function (){
       scale = true;
@@ -354,12 +358,15 @@ const drawPath = () => {
       console.log(scale);
       drawPath();
 
-    }, 1300);
+    }, 500);
+
+}
 };
 
 
 
 const playMusic = () => {
+  if(!inactive){
   setTimeout(function () {
 
 
@@ -371,6 +378,7 @@ const playMusic = () => {
 
     playMusic();
   }, musicSpeed);
+}
 };
 
 //-----------------------------------------------------------------------
@@ -528,6 +536,8 @@ const onColorMove = (event) => {
 //-----------------------------------------------------------------------
 const update = () => {
 
+  if(!inactive){
+
   if (fixedArr.length !== 0) {
     if (movingUP || movingDOWN || movingLEFT || movingRIGHT || rotateUP || rotateDOWN || rotateLEFT || rotateRIGHT ) {
       checkCollision();
@@ -613,7 +623,7 @@ const update = () => {
   //console.log("pannerpannerVal -> ", pannerVal);
   player.panner.setPosition(SoundUtil.getPanning(bounds, pannerVal), 0, 1 - Math.abs(SoundUtil.getPanning(bounds, pannerVal)));
 
-
+}
 };
 
 const fireTween = () => {
@@ -647,14 +657,14 @@ const fireTween = () => {
             }, 2000)
             .easing(TWEEN.Easing.Linear.None)
             .onUpdate(function() {
-              camera.lookAt(fixedArr[0].position);
               scene.remove(MovingCube);
+              camera.lookAt(fixedArr[0].position);
+              inactive = true;
 
             })
             .onComplete(function() {
               $('.backtohome').removeClass('hidden');
               $('.info-orbitcontrols').removeClass('hidden');
-
               new OrbitControls(camera);
 
             });
@@ -772,7 +782,8 @@ const checkCollision = () => {
 
 const play = (data=[]) => {
   arrBufferSounds = data;
-  player.playSoundtrack(data[2], 3);
+      player.playSoundtrack(data[2], 3);
+
   playMusic();
   musicInit = true;
   data.forEach(function(s) {
