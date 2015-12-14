@@ -312,6 +312,12 @@ input[type="radio"]:checked + label {
   z-index: 102;
 }
 
+.info-orbitcontrols {
+  position: absolute;
+  right: 70px;
+  bottom: 130px;
+}
+
 .backtohome {
   font-size: 1em;
   font-family: 'outagecut', Arial, sans-serif;

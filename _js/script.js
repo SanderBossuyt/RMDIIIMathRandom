@@ -549,7 +549,7 @@ const update = () => {
   var rotation_matrix = new THREE.Matrix4().identity();
 
   if (movingUP) {
-    MovingCube.translateZ(-0.8);
+    MovingCube.translateZ(-1.5);
   };
   if (movingDOWN){
      MovingCube.translateZ(0.9);
@@ -570,7 +570,7 @@ const update = () => {
 
   }
   if (rotateLEFT) {
-    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.009);
+    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), 0.023);
     //pannerVal = (window.innerWidth/4);
 
 
@@ -579,7 +579,7 @@ const update = () => {
     }
 
   }else if (rotateRIGHT) {
-    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.009);
+    MovingCube.rotateOnAxis( new THREE.Vector3(0, 1, 0), -0.023);
     //pannerVal = window.innerWidth-(window.innerWidth/4);
     if (pannerVal <= window.innerWidth-(window.innerWidth/7)) {
        pannerVal += 4;
@@ -653,6 +653,7 @@ const fireTween = () => {
             })
             .onComplete(function() {
               $('.backtohome').removeClass('hidden');
+              $('.info-orbitcontrols').removeClass('hidden');
 
               new OrbitControls(camera);
 
