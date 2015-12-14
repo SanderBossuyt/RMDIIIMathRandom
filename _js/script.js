@@ -7,7 +7,7 @@ import {SoundUtil} from './modules/util/';
 import {Player, BufferLoader} from './modules/sound/';
 import Torus from './modules/render/Torus';
 
-let Tracking = require('tracking/build/tracking.js');
+require('tracking/build/tracking.js');
 let OrbitControls = require('three-orbit-controls')(THREE);
 let TWEEN = require('tween.js');
 
