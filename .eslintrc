@@ -193,7 +193,8 @@
   "globals": {
     "THREE": true,
     "$": true,
-    "Tracking": true
+    "Tracking": true,
+    "tracking": true
   }
 
 }

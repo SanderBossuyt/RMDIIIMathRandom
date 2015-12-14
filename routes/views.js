@@ -1,7 +1,5 @@
 'use strict';
 
-//let script = require('../_js/script.js');
-
 
 module.exports = [
 
@@ -14,7 +12,7 @@ module.exports = [
 
       return reply.view('index', {
         name: 'Bossuyt Sander & Verheye Lieselot',
-        title: 'connect the dots',
+        title: 'connect the dots'
       });
 
     }
@@ -24,7 +22,6 @@ module.exports = [
     path: '/home',
     handler: (request, reply) => {
       request.session.clear();
-      //request.session.set('data', {});
       return reply.view('index', {
         name: 'Bossuyt Sander & Verheye Lieselot',
         title: 'connect the dots'
@@ -36,15 +33,12 @@ module.exports = [
     path: '/connectthedots',
     handler: (request, reply) => {
       if(request.session._store.level && request.session._store.playmode){
-        console.log("not empty session");
-
         return reply.view('game', {
           title: 'connect the dots',
           level: request.session.level
         });
 
       }else{
-        console.log("empty session");
         return reply.view('index', {
           name: 'Bossuyt Sander & Verheye Lieselot',
           title: 'connect the dots',
@@ -52,25 +46,9 @@ module.exports = [
 
         });
       }
-
-      //console.log("here", request.payload);
-
     }
   },
-
-   /*{
-    method: 'POST',
-    path: '/connectthedots',
-    handler: (request, reply) => {
-      request.session.set('level', request.payload.level);
-      //checks als de level leeg is redirecten
-      return reply.view('game', {
-        title: 'connect the dots',
-        level: request.payload.level
-      });
-
-    }*/
-    {
+  {
     method: 'POST',
     path: '/connectthedots',
     handler: (request, reply) => {
@@ -88,8 +66,6 @@ module.exports = [
           error: 'something went wrong, please try again.'
         });
       }
-
-
     }
   }
 

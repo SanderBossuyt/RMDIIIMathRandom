@@ -18,16 +18,9 @@ export default class Torus extends EventEmitter {
 
   }
 
-  setY(ypos){
-    console.log(ypos);
-  }
-
   render(){
 
     let {x, y, z} = this.position;
-
-    //let range = 200;
-
 
     let geometry = new THREE.TorusGeometry( 34, 9, 10, 11 );
     let material = new THREE.MeshPhongMaterial( { color: color, shading: THREE.FlatShading} );

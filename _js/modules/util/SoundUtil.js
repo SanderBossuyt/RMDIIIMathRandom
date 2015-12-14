@@ -1,19 +1,5 @@
 'use strict';
 
-//import MathUtil from './MathUtil';
-
-/*export const randomEffect = () => {
-
-  let effects = [];
-
-  for(let key in Effects){
-    effects.push(Effects[key]);
-  }
-
-  return effects[MathUtil.randomBetween(0, effects.length-1)];
-
-};*/
-
 export const getPanning = (bounds, x) => {
 
   let range = bounds.width - (bounds.border * 2);
